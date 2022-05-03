@@ -1,6 +1,6 @@
 module("ItemID", package.seeall, log.setup)
 clean.module("ItemID", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://robur.site/Thorn/Public/raw/branch/master/ItemID.lua", "1.0.1", "lol\\Modules\\Common")
+CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/ItemID.lua", "1.0.1", "lol\\Modules\\Common")
 
 ---@class ItemIDs
 local t = {
