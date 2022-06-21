@@ -791,6 +791,7 @@ _G.CoreEx.Renderer = Renderer
 ---@field GetLatency fun():integer
 ---@field IsMinimized fun():boolean
 ---@field IsChatOpen fun():boolean
+---@field IsShopOpen fun():boolean
 ---@field SendChat fun(msg:string):nil
 ---@field IsTFT fun():boolean
 ---@field IsRankedGame fun():boolean
@@ -1610,10 +1611,10 @@ _G.CoreEx.EvadeAPI = Evade
 ]]
 --[[
     1. Put a ".version" file with the same name and path of your script at the git
-        eg. https://robur.site/Thorn/Public/src/branch/master/UnrulyEzreal.lua
-            https://robur.site/Thorn/Public/src/branch/master/UnrulyEzreal.version
+        eg. https://github.com/Thorn/Public/blob/main/UnrulyEzreal.lua
+            https://github.com/Thorn/Public/blob/main/UnrulyEzreal.version
     2. Call CoreEx.AutoUpdate() on the script, passing the link and local version
-        eg. CoreEx.AutoUpdate("https://robur.site/Thorn/Public/raw/branch/master/UnrulyEzreal.lua", "1.0.0")
+        eg. CoreEx.AutoUpdate("https://raw.githubusercontent.com/Thorn/Public/main/UnrulyEzreal.lua", "1.0.0")
 ]]
 
 ---@type fun(rawLink:string, version:string):nil
