@@ -6,7 +6,7 @@ if Player.CharName ~= "Kindred" then return end
 
 module("Unruly Kindred", package.seeall, log.setup)
 clean.module("Unruly Kindred", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyKindred.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyKindred.lua", "1.0.4")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
