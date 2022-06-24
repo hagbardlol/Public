@@ -2,7 +2,7 @@ if Player.CharName ~= "Udyr" then return end
 
 module("Unruly Udyr", package.seeall, log.setup)
 clean.module("Unruly Udyr", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyUdyr.lua", "1.0.2")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyUdyr.lua", "1.0.3")
 
 local _SDK = _G.CoreEx
 local Console, ObjManager, EventManager, Geometry, Input, Renderer, Enums, Game = _SDK.Console, _SDK.ObjectManager, _SDK.EventManager, _SDK.Geometry, _SDK.Input, _SDK.Renderer, _SDK.Enums, _SDK.Game
