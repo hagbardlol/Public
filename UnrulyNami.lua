@@ -2,7 +2,7 @@ if Player.CharName ~= "Nami" then return end
 
 module("UnrulyNami", package.seeall, log.setup)
 clean.module("UnrulyNami", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyNami.lua", "1.0.2")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/raw/main/UnrulyNami.lua", "1.0.3")
 
 local insert = table.insert
 local max, min = math.max, math.min
