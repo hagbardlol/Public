@@ -6,7 +6,7 @@ if Player.CharName ~= "Xerath" then return end
 
 module("Unruly Xerath", package.seeall, log.setup)
 clean.module("Unruly Xerath", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyXerath.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyXerath.lua", "1.0.5")
 
 local clock = os.clock
 local insert = table.insert
