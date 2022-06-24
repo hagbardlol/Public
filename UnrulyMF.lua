@@ -2,7 +2,7 @@ if Player.CharName ~= "MissFortune" then return end
 
 module("UnrulyMF", package.seeall, log.setup)
 clean.module("UnrulyMF", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyMF.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyMF.lua", "1.0.4")
 
 local insert = table.insert
 
