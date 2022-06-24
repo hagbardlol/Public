@@ -2,7 +2,7 @@ if Player.CharName ~= "Talon" then return end
 
 module("UnrulyTalon", package.seeall, log.setup)
 clean.module("UnrulyTalon", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/raw/main/UnrulyTalon.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyTalon.lua", "1.0.3")
 
 local insert = table.insert
 local max, min = math.max, math.min
