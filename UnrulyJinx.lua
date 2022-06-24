@@ -3,8 +3,8 @@ if Player.CharName ~= "Jinx" then return end
 module("Unruly Jinx", package.seeall, log.setup)
 clean.module("Unruly Jinx", clean.seeall, log.setup)
 
-local _VER, _LASTMOD = "1.0.3", "04-Jan-2021"
-CoreEx.AutoUpdate("https://github.com/hagbardlol/Public/raw/main/UnrulyJinx.lua", _VER)
+local _VER, _LASTMOD = "1.0.4", "04-Jan-2021"
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyJinx.lua", _VER)
 
 local huge, min, max, abs, insert = math.huge, math.min, math.max, math.abs, table.insert
 
