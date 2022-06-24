@@ -6,7 +6,7 @@ if Player.CharName ~= "Ashe" then return end
 
 module("Unruly Ashe", package.seeall, log.setup)
 clean.module("Unruly Ashe", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyAshe.lua", "1.0.2")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyAshe.lua", "1.0.3")
 
 local clock = os.clock
 local insert = table.insert
