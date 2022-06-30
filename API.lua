@@ -726,6 +726,8 @@ function Input.Cast(slot) end
 ---@param target AttackableUnit
 ---@return boolean
 function Input.Attack(target) end
+---@return boolean
+function Input.HoldPosition() end
 ---@param pos Vector
 ---@return boolean
 function Input.MoveTo(pos) end
@@ -775,7 +777,7 @@ local Sprite
 ---@field GetResolution fun():Vector
 ---@field GetMousePos fun():Vector
 ---@field CalcTextSize fun(text: string):Vector
----@field CreateSprite fun(relPath: string, width: integer, height: integer):Sprite @(relPath="Rocket.png" will return file [\\lol\\Sprites\\Rocket.png]). Call Only Once Per Sprite! 
+---@field CreateSprite fun(relPath: string, width: integer, height: integer):Sprite @(eg. path relative to sprite folder or relPath="assets/characters/aatrox/hud/aatrox_circle.png" view path on https://raw.communitydragon.org/latest/game/). Call Only Once Per Sprite! 
 local Renderer 
 _G.CoreEx.Renderer = Renderer
 
@@ -1378,6 +1380,7 @@ _G.Libs.TargetSelector = tsConstructor
 ---@field CanAttack fun():boolean
 ---@field CanCast fun():boolean
 ---@field IsFastClearEnabled fun():boolean
+---@field IsLaneFreezeEnabled fun():boolean
 ---@field MoveTo fun(position: Vector) @Forces Orb To Move To This Position. Use Orbwalker.MoveTo(nil) to reset. WARNING! IMPROPER USAGE MIGHT MAKE ORB STUCK!
 ---@field Move fun(position: Vector):nil @Useful for Custom Modes etc
 ---@field Attack fun(target: AttackableUnit):nil @Useful for Custom Modes etc
@@ -1620,4 +1623,3 @@ _G.CoreEx.EvadeAPI = Evade
 ---@type fun(rawLink:string, version:string):nil
 local AutoUpdate
 _G.CoreEx.AutoUpdate = AutoUpdate
-
