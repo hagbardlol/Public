@@ -1381,6 +1381,7 @@ _G.Libs.TargetSelector = tsConstructor
 ---@field CanCast fun():boolean
 ---@field IsFastClearEnabled fun():boolean
 ---@field IsLaneFreezeEnabled fun():boolean
+---@field IsSupportModeEnabled fun():boolean
 ---@field MoveTo fun(position: Vector) @Forces Orb To Move To This Position. Use Orbwalker.MoveTo(nil) to reset. WARNING! IMPROPER USAGE MIGHT MAKE ORB STUCK!
 ---@field Move fun(position: Vector):nil @Useful for Custom Modes etc
 ---@field Attack fun(target: AttackableUnit):nil @Useful for Custom Modes etc
@@ -1428,7 +1429,7 @@ _G.Libs.Profiler = Profiler
 ---@field GetTarget fun(self:SpellBase):AIHeroClient|nil
 ---@field GetTargets fun(self:SpellBase):AIHeroClient[]
 ---@field GetFarmTargets fun(self:SpellBase, onlyUnKillable:boolean):AIMinionClient[]
----@field GetDamage fun(target:AIBaseClient, stage:string|nil):number
+---@field GetDamage fun(self:SpellBase, target:AIBaseClient, stage:string|nil):number
 ---@field GetHealthPred fun(self:SpellBase, target:AIBaseClient):number
 ---@field CanCast fun(self:SpellBase, target:AIBaseClient):boolean
 ---@field IsInRange fun(self:SpellBase, pos_or_target:AIBaseClient|Vector):boolean
@@ -1445,9 +1446,9 @@ local SpellBase
 ---@field GetBestLinearCastPos fun(self:Skillshot, targets: Vector[]|AIBaseClient[]):Vector,number
 ---@field GetBestCircularCastPos fun(self:Skillshot, targets: Vector[]|AIBaseClient[]):Vector,number
 ---@field CastIfWillHit fun(self:Skillshot, minTargets, _type):boolean
----@field GetDamage fun(target:AIBaseClient, stage:string|nil):number @stage: "Default", "Empowered", "SecondCast", "ThirdCast", "SecondForm", "ThirdForm"..
----@field GetHealthPred fun(target:AIBaseClient):number
----@field GetKillstealHealth fun(target:AIHeroClient):number @Current health + shield + yasuo passive etc
+---@field GetDamage fun(self:Skillshot, target:AIBaseClient, stage:string|nil):number @stage: "Default", "Empowered", "SecondCast", "ThirdCast", "SecondForm", "ThirdForm"..
+---@field GetHealthPred fun(self:Skillshot, target:AIBaseClient):number
+---@field GetKillstealHealth fun(self:Skillshot, target:AIHeroClient):number @Current health + shield + yasuo passive etc
 local Skillshot
 
 ---@class Targeted : SpellBase
@@ -1466,7 +1467,7 @@ local Active
 ---@field GetTargetsMaxRange fun(self:Chargeable):AIHeroClient[]
 ---@field StartCharging fun(self:Chargeable):boolean @Start charging the spell
 ---@field Release fun(self:Chargeable, pos_target: AIBaseClient|Vector):boolean @Release a spell during charge
----@field ReleaseOnHitChance fun(target:AIBaseClient, minHitChance:number|Enums_HitChance):boolean @Release a spell during charge
+---@field ReleaseOnHitChance fun(self:Chargeable, target:AIBaseClient, minHitChance:number|Enums_HitChance):boolean @Release a spell during charge
 ---@field Cast fun(self:Chargeable, pos_target: AIBaseClient|Vector):boolean @Instant cast the spell at min range towards position or target prediction
 local Chargeable
 
@@ -1512,7 +1513,7 @@ _G.CoreEx.Geometry.LineCircleIntersection = LineCircleIntersection
 ---@field GetKey fun(id: string, nothrow: boolean):any
 ---@field Indent fun(func: function):nil
 ---@field SameLine fun(offset: integer|nil, spacing: integer|nil):nil
----@field Separator fun():nil
+---@field Separator fun(text: string|nil):nil
 ---@field Text fun(displayText: string, centered:boolean|nil):nil
 ---@field ColoredText fun(displayText: string, color: integer, centered:boolean|nil):nil
 ---@field SmallButton fun(id: string, displayText: string, func: function):nil
