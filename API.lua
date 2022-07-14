@@ -1395,6 +1395,7 @@ _G.Libs.TargetSelector = tsConstructor
 ---@field GetTrueAutoAttackMissileSpeed fun():number
 ---@field GetAutoAttackDamage fun(minion: AttackableUnit):number @Only For Minions, For Other Objects use DamageLib.GetAutoAttackDamage
 ---@field HasTurretTargetting fun(obj: AttackableUnit):boolean @Returns if Object is being attacked by a turret
+---@field CheckAutoAttackMissileCollision fun(obj: GameObject):boolean @Returns if your auto-attack missile collides with Yasuo Wall, Samira Wall, Jax Counter-Strike on travel to obj
 local Orbwalker
 _G.Libs.Orbwalker = Orbwalker
 
