@@ -1457,7 +1457,7 @@ local Skillshot
 local Targeted
 
 ---@class Active : SpellBase
----@field Cast fun(self:Active, pos_target:AIBaseClient|Vector):boolean
+---@field Cast fun(self:Active, pos_target:AIBaseClient|Vector|nil):boolean
 local Active
 
 ---@class Chargeable : Skillshot
@@ -1510,7 +1510,7 @@ _G.CoreEx.Geometry.LineCircleIntersection = LineCircleIntersection
 
 ---@class Menu
 ---@field Set fun(id: string, value: any, nothrow: boolean):any
----@field Get fun(id: string, nothrow: boolean):any
+---@field Get fun(id: string, nothrow: boolean|nil):any
 ---@field GetKey fun(id: string, nothrow: boolean):any
 ---@field Indent fun(func: function):nil
 ---@field SameLine fun(offset: integer|nil, spacing: integer|nil):nil
