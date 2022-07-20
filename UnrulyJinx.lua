@@ -2,7 +2,7 @@ if Player.CharName ~= "Jinx" then return end
 
 module("Unruly Jinx", package.seeall, log.setup)
 clean.module("Unruly Jinx", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/JinxMechanics.lua", "1.0.5")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyJinx.lua", "1.0.5")
 local CoreEx = _G.CoreEx
 local Enums, EventManager, Renderer, Game, Vector = CoreEx.Enums, CoreEx.EventManager, CoreEx.Renderer, CoreEx.Game, CoreEx.Geometry.Vector
 local Screen = Renderer.GetResolution()
