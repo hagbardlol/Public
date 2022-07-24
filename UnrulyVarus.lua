@@ -6,7 +6,7 @@ if Player.CharName ~= "Varus" then return end
 
 module("Unruly Varus", package.seeall, log.setup)
 clean.module("Unruly Varus", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVarus.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVarus.lua", "1.0.4")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -385,54 +385,52 @@ end
 function Varus.LoadMenu()
     Menu.RegisterMenu("UnrulyVarus", "Unruly Varus", function()
         Menu.ColumnLayout("cols", "cols", 3, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
+            Menu.Separator("Combo", 0xFFD700FF, true)
             Menu.Checkbox("Combo.UseQ",   "Use [Q]", true)
             Menu.Indent(function()
                 Menu.Checkbox("Combo.MaxQ", "Only Max Range", true)
                 Menu.Checkbox("Combo.StacksQ", "Only Max Stacks", false)
-                Menu.Slider("Combo.ChanceQ", "HitChance", 0.7, 0, 1, 0.05)
+                Menu.Slider("Combo.ChanceQ", "HitChance", 0.35, 0, 1, 0.05)
             end) 
                 
             Menu.Checkbox("Combo.UseW",   "Use [W]", true)            
             Menu.Checkbox("Combo.UseE",   "Use [E]", true)   
             Menu.Indent(function()
-                Menu.Slider("Combo.ChanceE", "HitChance [E]", 0.7, 0, 1, 0.05)
+                Menu.Slider("Combo.ChanceE", "HitChance [E]", 0.35, 0, 1, 0.05)
             end) 
             
             Menu.Checkbox("Combo.UseR", "Use [R]", true)  
             Menu.Indent(function()                
-                Menu.Slider("Combo.ChanceR", "HitChance [R]", 0.85, 0, 1, 0.05) 
+                Menu.Slider("Combo.ChanceR", "HitChance [R]", 0.50, 0, 1, 0.05) 
                 Menu.Slider("Combo.MinR", "If X Enemies Hit", 3, 1, 5)               
                 Menu.Checkbox("Combo.DangerousR", "When Dangerous", true)               
             end) 
             Menu.NextColumn()
 
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
+            Menu.Separator("Harass", 0xFFD700FF, true)
             Menu.Checkbox("Harass.UseQ",   "Use [Q]", true)
             Menu.Indent(function()
                 Menu.Checkbox("Harass.MaxQ", "Only Max Range", true)
                 Menu.Checkbox("Harass.StacksQ", "Only Max Stacks", true)
-                Menu.Slider("Harass.ChanceQ", "HitChance", 0.75, 0, 1, 0.05)
+                Menu.Slider("Harass.ChanceQ", "HitChance", 0.35, 0, 1, 0.05)
             end) 
                 
             Menu.Checkbox("Harass.UseW",   "Use [W]", true)            
             Menu.Checkbox("Harass.UseE",   "Use [E]", true)   
             Menu.Indent(function()
-                Menu.Slider("Harass.ChanceE", "HitChance [E]", 0.75, 0, 1, 0.05)
+                Menu.Slider("Harass.ChanceE", "HitChance [E]", 0.35, 0, 1, 0.05)
             end) 
 
             Menu.NextColumn()
 
-            Menu.ColoredText("Clear", 0xFFD700FF, true)
+            Menu.Separator("Clear", 0xFFD700FF, true)
             Menu.Checkbox("Clear.JungleQ", "Use [Q] Jungle", true)
             Menu.Checkbox("Clear.JungleE", "Use [E] Jungle", true)
             Menu.Checkbox("Clear.PushQ",   "Use [Q] Push", true)            
             Menu.Checkbox("Clear.PushE",   "Use [E] Push", true)
         end)    
 
-        Menu.Separator()
-
-        Menu.ColoredText("Misc Options", 0xFFD700FF, true)
+        Menu.Separator("Misc Options", 0xFFD700FF, true)
         Menu.Checkbox("Misc.ObvMode", "Obvious Scripter Mode", true)      
         Menu.Checkbox("Misc.AutoQ", "Auto [Q] Immobile", true)      
         Menu.Checkbox("Misc.AutoR", "Auto [R] Chain CC", true)      
@@ -440,9 +438,7 @@ function Varus.LoadMenu()
         Menu.Checkbox("Misc.GapR", "Use [R] Gapclose", true)      
         Menu.Keybind("Misc.ForceR", "Force [R] Key", string.byte('T'))
 
-        Menu.Separator()
-
-        Menu.ColoredText("Draw Options", 0xFFD700FF, true)
+        Menu.Separator("Draw Options", 0xFFD700FF, true)
         Menu.Checkbox("Drawing.Q.Enabled",   "Draw [Q] Range")
         Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
         Menu.Checkbox("Drawing.E.Enabled",   "Draw [E] Range")

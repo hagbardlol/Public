@@ -6,7 +6,7 @@ if Player.CharName ~= "Darius" then return end
 
 module("Unruly Darius", package.seeall, log.setup)
 clean.module("Unruly Darius", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.4")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -259,7 +259,7 @@ end
 function Darius.LoadMenu()
     Menu.RegisterMenu("UnrulyDarius", "Unruly Darius", function()
         Menu.ColumnLayout("test2", "test", 2, true, function()        
-            Menu.ColoredText("Combo Options", 0xFFD700FF, true)
+            Menu.Separator("Combo Options", 0xFFD700FF, true)
             Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
             Menu.Checkbox("Combo.UseW", "Use [W]", true) 
             Menu.Checkbox("Combo.UseE", "Use [E]", true) 
@@ -267,21 +267,19 @@ function Darius.LoadMenu()
     
             Menu.NextColumn()
         
-            Menu.ColoredText("Harass Options", 0xFFD700FF, true)
+            Menu.Separator("Harass Options", 0xFFD700FF, true)
             Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
             Menu.Checkbox("Harass.UseW", "Use [W]", true) 
             Menu.Checkbox("Harass.UseE", "Use [E]", true) 
         end)      
     
-        Menu.Separator()
-        Menu.ColoredText("Misc Options", 0xFFD700FF, true)
+        Menu.Separator("Misc Options", 0xFFD700FF, true)
         Menu.Checkbox("Misc.Magnet", "Force Move To Hit [Q]", true) 
         Menu.Checkbox("Misc.TurretW", "Use [W] On Turrets", true) 
         Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true) 
         Menu.Checkbox("Misc.IntE", "Use [E] Interrupt", true)   
         
-        Menu.Separator()
-        Menu.ColoredText("Drawing Options", 0xFFD700FF, true)
+        Menu.Separator("Drawing Options", 0xFFD700FF, true)
         Menu.Checkbox("Drawing.Q.Enabled", "[Q] Range", true) 
         Menu.ColorPicker("Drawing.Q.Color", "[Q] Color", 0xEF476FFF)
         Menu.Checkbox("Drawing.E.Enabled", "[E] Range") 
