@@ -1,5 +1,5 @@
----@alias Pointer integer
----@alias Handle_t integer
+---@alias Pointer number
+---@alias Handle_t number
 
 --[[
     ██       ██████   ██████ 
@@ -146,7 +146,7 @@ _G.CoreEx.Geometry = {}
 ---@field Perpendicular fun(self: Vector):Vector
 ---@field Perpendicular2 fun(self: Vector):Vector
 ---@field Absolute fun(self: Vector):Vector
----@field Draw fun(self: Vector, color: integer):void
+---@field Draw fun(self: Vector, color: integer):nil
 ---@field IsOnScreen fun(self: Vector):boolean
 ---@field IsWall fun(self: Vector):boolean 
 ---@field IsGrass fun(self: Vector):boolean 
@@ -372,7 +372,7 @@ local SpellCast
     ██████   ██████  ██      ██          ██ ██   ████ ███████    ██    
 ]]
 ---@class BuffInst
----@field IsValid bool
+---@field IsValid boolean
 ---@field Name string
 ---@field Source AIBaseClient
 ---@field BuffType Enum_BuffTypes
@@ -381,12 +381,12 @@ local SpellCast
 ---@field EndTime number
 ---@field Duration number
 ---@field DurationLeft number
----@field IsCC bool
----@field IsNotDebuff bool
----@field IsFear bool
----@field IsRoot bool
----@field IsSilence bool
----@field IsDisarm bool
+---@field IsCC boolean
+---@field IsNotDebuff boolean
+---@field IsFear boolean
+---@field IsRoot boolean
+---@field IsSilence boolean
+---@field IsDisarm boolean
 local BuffInst
 
 ---@class Pathing
@@ -836,12 +836,12 @@ _G.CoreEx.Nav = Nav
 ---@field ItemId integer 
 ---@field CurrentStacks integer @eg. Number of Pots   
 ---@field MaxStacks integer  @eg. Max Pots In Slot (5)
----@field Count float @eg. Current Active Wards     
----@field MaxCount float @eg. Max Active Wards  
----@field Duration float @eg. 90 
----@field RechargeTime float @eg. 240
----@field Charges float @eg. DeadManPlate's Charges
----@field MaxCharges float @eg. 2 
+---@field Count number @eg. Current Active Wards     
+---@field MaxCount number @eg. Max Active Wards  
+---@field Duration number @eg. 90 
+---@field RechargeTime number @eg. 240
+---@field Charges number @eg. DeadManPlate's Charges
+---@field MaxCharges number @eg. 2 
 ---@field HasActiveAbility boolean    
 local Item
 
@@ -1027,7 +1027,7 @@ _G.CoreEx.Enums.SpellStates = SpellStates
 ---@field OnDraw string                @[[Screen Refresh Rate]] void OnDraw()
 ---@field OnDrawMenu string            @[[Screen Refresh Rate]] void OnDrawMenu()
 ---@field OnDrawHUD string             @[[Screen Refresh Rate]] void OnDrawHUD()
----@field OnDrawDamage string          @[[Screen Refresh Rate]] void OnDrawDamage(target, dmgList)
+---@field OnDrawDamage string          @[[Screen Refresh Rate]] void OnDrawDamage(target, dmgList) @default color: insert(dmgList, number) | custom color > insert(dmgList, {Damage=300, Color=0xFF0000FF})
 ---@field OnKey string                 @[[KeyPress]] void OnKey(e, message, wparam, lparam)
 ---@field OnMouseEvent string          @[[KeyPress]] void OnMouseEvent(message, wparam, lparam)
 ---@field OnKeyDown string             @[[KeyPress]] void OnKeyDown(keycode, char, lparam)
@@ -1396,8 +1396,47 @@ _G.Libs.TargetSelector = tsConstructor
 ---@field GetAutoAttackDamage fun(minion: AttackableUnit):number @Only For Minions, For Other Objects use DamageLib.GetAutoAttackDamage
 ---@field HasTurretTargetting fun(obj: AttackableUnit):boolean @Returns if Object is being attacked by a turret
 ---@field CheckAutoAttackMissileCollision fun(obj: GameObject):boolean @Returns if your auto-attack missile collides with Yasuo Wall, Samira Wall, Jax Counter-Strike on travel to obj
+---@field ForceTarget fun(Target:AIHeroClient|nil):nil
+---@field GetForcedTarget fun():AIHeroClient|nil
+---@field RemoveForcedTarget fun():nil
+---@field FineTuneUnkillable fun(val: number):nil
 local Orbwalker
 _G.Libs.Orbwalker = Orbwalker
+
+--[=[
+    Use this ONLY WHEN you need more time to kill unkillable Minions.
+    It'll make the event fire earlier, leting you cast slower 
+    spells, but will also add false positives. 
+    eg. fire for a minion that could be killed with an AA
+    *** Orbwalker.FineTuneUnkillable(0.75) ***
+
+    Below is an example of how to use it on your scripts:
+    function Annie.OnUnkillableMinion(minion)
+        --[[ Some Other Script Will Already Kill This Minion ]]
+        if Orbwalker.IsIgnoringMinion(minion) then        
+            return
+        end
+
+        --[[ Use Q To Kill And Tell Orbwalker/Other Scripts To Ignore This Minion]]
+        if Menu.Get("Annie.lasthit.unkillableQ") and spells.Q:IsInRange(minion) then
+            if spells.Q:IsReady() and spells.Q:CanKillTarget(minion) and spells.Q:Cast(minion) then
+                Orbwalker.IgnoreMinion(minion)
+                return
+            end
+        end
+
+        --[[ Use W To Kill And Tell Orbwalker/Other Scripts To Ignore This Minion]]
+        if Menu.Get("Annie.lasthit.unkillableW") and spells.W:IsInRange(minion) then
+            if spells.W:IsReady() and spells.W:CanKillTarget(minion) and spells.W:Cast(minion) then
+                Orbwalker.IgnoreMinion(minion)
+                return
+            end    
+        end
+    end
+]=]
+-- 
+
+
 
 --[[
     ██████  ██████   ██████  ███████ ██ ██      ██ ███    ██  ██████  
@@ -1457,7 +1496,7 @@ local Skillshot
 local Targeted
 
 ---@class Active : SpellBase
----@field Cast fun(self:Active, pos_target:AIBaseClient|Vector):boolean
+---@field Cast fun(self:Active, pos_target:AIBaseClient|Vector|nil):boolean
 local Active
 
 ---@class Chargeable : Skillshot
@@ -1510,7 +1549,7 @@ _G.CoreEx.Geometry.LineCircleIntersection = LineCircleIntersection
 
 ---@class Menu
 ---@field Set fun(id: string, value: any, nothrow: boolean):any
----@field Get fun(id: string, nothrow: boolean):any
+---@field Get fun(id: string, nothrow: boolean|nil):any
 ---@field GetKey fun(id: string, nothrow: boolean):any
 ---@field Indent fun(func: function):nil
 ---@field SameLine fun(offset: integer|nil, spacing: integer|nil):nil
@@ -1625,3 +1664,4 @@ _G.CoreEx.EvadeAPI = Evade
 ---@type fun(rawLink:string, version:string):nil
 local AutoUpdate
 _G.CoreEx.AutoUpdate = AutoUpdate
+
