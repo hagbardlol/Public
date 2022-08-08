@@ -6,7 +6,7 @@ if Player.CharName ~= "Darius" then return end
 
 module("Unruly Darius", package.seeall, log.setup)
 clean.module("Unruly Darius", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.5")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -25,7 +25,7 @@ local Darius = {}
 local spells = {
     Q = Spell.Active({
         Slot = Enums.SpellSlots.Q,
-        Range = 400,
+        Range = 420,
         Delay = 0.75,
 
         LastCast = 0,
@@ -39,15 +39,15 @@ local spells = {
     }),
     E = Spell.Skillshot({
         Slot = Enums.SpellSlots.E,
-        Range = 510,
+        Range = 535,
         Delay = 0.25,
         Radius = 50,
-        Type = "Linear"
+        Type = "Cone"
     }),
     R = Spell.Targeted({
         Slot = Enums.SpellSlots.R,
-        Range = 460,
-        Delay = 0.35
+        Range = 475,
+        Delay = 0.36
     })
 }
 
@@ -78,7 +78,7 @@ function Darius.OnTick()
     if Darius.Auto() or not Orbwalker.CanCast() then return end
     
     local gameTime = Game.GetTime()
-    if gameTime < (lastTick + 0.125) then return end
+    if gameTime < (lastTick + 0.2) then return end
     lastTick = gameTime    
 
     local ModeToExecute = Darius[Orbwalker.GetMode()]
@@ -178,7 +178,7 @@ function Darius.OnGapclose(source, dash)
 
     local pPos = Player.Position 
     if pPos:Distance(endPos) > spells.E.Range then
-        spells.E:CastOnHitChance(source, Enums.HitChance.VeryHigh)       
+        spells.E:CastOnHitChance(source, Enums.HitChance.Low)       
     end    
 end
 
@@ -187,7 +187,7 @@ end
 function Darius.OnInterruptibleSpell(source, spell, danger, endT, canMove)
     if not (source.IsEnemy and Menu.Get("Misc.IntE") and spells.E:IsReady() and danger > 2) then return end
 
-    spells.E:CastOnHitChance(source, Enums.HitChance.VeryHigh)
+    spells.E:CastOnHitChance(source, Enums.HitChance.Low)
 end
 
 function Darius.OnProcessSpell(obj, spell)
@@ -258,34 +258,37 @@ end
 
 function Darius.LoadMenu()
     Menu.RegisterMenu("UnrulyDarius", "Unruly Darius", function()
-        Menu.ColumnLayout("test2", "test", 2, true, function()        
-            Menu.Separator("Combo Options", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
-            Menu.Checkbox("Combo.UseW", "Use [W]", true) 
-            Menu.Checkbox("Combo.UseE", "Use [E]", true) 
-            Menu.Checkbox("Combo.UseR", "Use [R]", true) 
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
+            Menu.Checkbox("Combo.UseW", "Use [W]", true)
+            Menu.Checkbox("Combo.UseE", "Use [E]", true)
+            Menu.Checkbox("Combo.UseR", "Use [R]", true)
+        end)
+
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
+            Menu.Checkbox("Harass.UseW", "Use [W]", true)
+            Menu.Checkbox("Harass.UseE", "Use [E]", true)
+        end)
     
-            Menu.NextColumn()
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.Magnet", "Force Move To Hit [Q]", true)
+            Menu.Checkbox("Misc.TurretW", "Use [W] On Turrets", true)
+            Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true)
+            Menu.Checkbox("Misc.IntE", "Use [E] Interrupt", true)
+        end)
         
-            Menu.Separator("Harass Options", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
-            Menu.Checkbox("Harass.UseW", "Use [W]", true) 
-            Menu.Checkbox("Harass.UseE", "Use [E]", true) 
-        end)      
-    
-        Menu.Separator("Misc Options", 0xFFD700FF, true)
-        Menu.Checkbox("Misc.Magnet", "Force Move To Hit [Q]", true) 
-        Menu.Checkbox("Misc.TurretW", "Use [W] On Turrets", true) 
-        Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true) 
-        Menu.Checkbox("Misc.IntE", "Use [E] Interrupt", true)   
-        
-        Menu.Separator("Drawing Options", 0xFFD700FF, true)
-        Menu.Checkbox("Drawing.Q.Enabled", "[Q] Range", true) 
-        Menu.ColorPicker("Drawing.Q.Color", "[Q] Color", 0xEF476FFF)
-        Menu.Checkbox("Drawing.E.Enabled", "[E] Range") 
-        Menu.ColorPicker("Drawing.E.Color", "[E] Color", 0x118AB2FF)
-        Menu.Checkbox("Drawing.R.Enabled", "[R] Range") 
-        Menu.ColorPicker("Drawing.R.Color", "[R] Color", 0xFFD166FF)
+            Menu.Separator("Drawing Options", 0xFFD700FF, true)
+            Menu.Checkbox("Drawing.Q.Enabled", "[Q] Range", true)
+            Menu.ColorPicker("Drawing.Q.Color", "[Q] Color", 0xEF476FFF)
+            Menu.Checkbox("Drawing.E.Enabled", "[E] Range")
+            Menu.ColorPicker("Drawing.E.Color", "[E] Color", 0x118AB2FF)
+            Menu.Checkbox("Drawing.R.Enabled", "[R] Range")
+            Menu.ColorPicker("Drawing.R.Color", "[R] Color", 0xFFD166FF)
+            Menu.Separator("Author: Thorn")
     end)
 end
 
