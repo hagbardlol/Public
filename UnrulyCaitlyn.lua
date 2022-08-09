@@ -6,7 +6,7 @@ if Player.CharName ~= "Caitlyn" then return end
 
 module("Unruly Caitlyn", package.seeall, log.setup)
 clean.module("Unruly Caitlyn", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.5")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.6")
 
 local clock = os.clock
 local insert = table.insert
@@ -83,54 +83,59 @@ end
 
 function Caitlyn.LoadMenu()
     Menu.RegisterMenu("UnrulyCaitlyn", "Unruly Caitlyn", function()       
-        Menu.Separator("HotKeys")
-        Menu.Keybind("Misc.ForceE", "[E] To Cursor", string.byte('T'))     
-
-        Menu.Separator("Settings")
         Menu.NewTree("CaitlynCombo", "Combo Settings", function()
-            Menu.Checkbox("Combo.UseQ",  "Use [Q]", true)
-            Menu.Slider("Combo.SafeQ",   "Block [Q] Enemies Nearby", 1, 0, 5)
-            Menu.Checkbox("Combo.UseW",  "Use [W]", true)
-            Menu.Slider("Combo.SaveW",   "Save Traps", 1, 0, 5)
-            Menu.Checkbox("Combo.UseE",  "Use [E]", true)            
+        Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
+            Menu.Slider("Combo.SafeQ", "Block [Q] Enemies Nearby", 1, 0, 5)
+            Menu.Checkbox("Combo.UseW", "Use [W]", true)
+            Menu.Slider("Combo.SaveW", "Save Traps", 1, 0, 5)
+            Menu.Checkbox("Combo.UseE", "Use [E]", true)            
         end)            
 
         Menu.NewTree("CaitlynHarass", "Harass Settings", function()
-            Menu.Checkbox("Harass.UseQ",  "Use [Q]", true)
-            Menu.Slider("Harass.SafeQ",   "Block [Q] Enemies Nearby", 1, 0, 5)
-            Menu.Checkbox("Harass.UseW",  "Use [W]", true)
-            Menu.Slider("Harass.SaveW",   "Save Traps", 2, 0, 5)
-            Menu.Checkbox("Harass.UseE",  "Use [E]", false) 
+        Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
+            Menu.Slider("Harass.SafeQ", "Block [Q] Enemies Nearby", 1, 0, 5)
+            Menu.Checkbox("Harass.UseW", "Use [W]", true)
+            Menu.Slider("Harass.SaveW", "Save Traps", 2, 0, 5)
+            Menu.Checkbox("Harass.UseE", "Use [E]", false) 
         end)
 
         Menu.NewTree("Fast Clear", "Clear Settings", function()
+        Menu.Separator("Fast Clear Settings")
             Menu.Checkbox("Clear.PushQ", "Use [Q]", true) 
         end)
         
         Menu.NewTree("CaitlynFlee", "Flee Settings", function()
-            Menu.Checkbox("Flee.UseE",      "Use [E]", true) 
+        Menu.Separator("Flee Settings")
+            Menu.Checkbox("Flee.UseE", "Use [E]", true) 
         end)       
     
-        Menu.NewTree("CaitlynMisc", "Misc Settings", function() 
-            Menu.Checkbox("Misc.AutoQ",    "Auto [Q] Immobile")
-            Menu.Checkbox("Misc.AutoW",    "Auto [W] Immobile/Dash")
-            Menu.Checkbox("Misc.GapW",     "Auto [W] GapClose")
-            Menu.Checkbox("Misc.GapE",     "Auto [E] GapClose")          
-            Menu.Checkbox("Misc.AutoR",    "Auto [R] Killable", true)
-            Menu.Slider("Misc.MinRangeR",  "Min Range For [R]", 1300, 1000, Spells.R.Range-500, 50) 
-            Menu.Slider("Misc.SafeRangeR", "Block [R] Enemies Nearby", 800, 0, 1250, 50)              
+        Menu.NewTree("CaitlynMisc", "Misc Settings", function()
+        Menu.Separator("Misc Settings")
+            Menu.Checkbox("Misc.AutoQ", "Auto [Q] Immobile")
+            Menu.Checkbox("Misc.AutoW", "Auto [W] Immobile/Dash", true)
+            Menu.Checkbox("Misc.GapW", "Auto [W] GapClose")
+            Menu.Checkbox("Misc.GapE", "Auto [E] GapClose", true)          
+            Menu.Checkbox("Misc.AutoR", "Auto [R] Killable", true)
+            Menu.Slider("Misc.MinRangeR", "Min Range For [R]", 1000, 1000, Spells.R.Range-500, 50) 
+            Menu.Slider("Misc.SafeRangeR", "Block [R] Enemies Nearby", 500, 0, 1250, 50)              
         end)
 
-        Menu.NewTree("CaitlynDraw", "Draw Settings", function() 
-            Menu.Checkbox("Drawing.Q.Enabled",    "Draw [Q] Range")
-            Menu.ColorPicker("Drawing.Q.Color",   "Draw [Q] Color", 0xEF476FFF) 
-            Menu.Checkbox("Drawing.W.Enabled",    "Draw [W] Range")
-            Menu.ColorPicker("Drawing.W.Color",   "Draw [W] Color", 0x06D6A0FF) 
-            Menu.Checkbox("Drawing.E.Enabled",    "Draw [E] Range")
-            Menu.ColorPicker("Drawing.E.Color",   "Draw [E] Color", 0x118AB2FF) 
-            Menu.Checkbox("Drawing.R.EnabledMM",  "Draw [R] Range Minimap")
+        Menu.NewTree("CaitlynDraw", "Draw Settings", function()
+        Menu.Separator("Drawing Settings")
+            Menu.Checkbox("Drawing.Q.Enabled", "Draw [Q] Range", true)
+            Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
+            Menu.Checkbox("Drawing.W.Enabled", "Draw [W] Range", false)
+            Menu.ColorPicker("Drawing.W.Color", "Draw [W] Color", 0x06D6A0FF) 
+            Menu.Checkbox("Drawing.E.Enabled", "Draw [E] Range", false)
+            Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF) 
+            Menu.Checkbox("Drawing.R.EnabledMM", "Draw [R] Range Minimap", false)
             Menu.ColorPicker("Drawing.R.ColorMM", "Draw [R] Color", 0xFFD166FF)
-        end)  
+        end)
+        Menu.Separator("Hotkeys")
+        Menu.Keybind("Misc.ForceE", "[E] To Cursor", string.byte('T'))     
+        Menu.Separator("Author: Thorn")
     end)
 end
 
@@ -229,7 +234,7 @@ function Caitlyn.ComboLogic(mode)
     end
     if Caitlyn.IsEnabledAndReady("W", mode) and Spells.W:GetCurrentAmmo() > Menu.Get(mode..".SaveW") then
         for k, hero in ipairs(Spells.W:GetTargets()) do
-            if not blockList[hero.Handle] and Spells.W:CastOnHitChance(hero, Enums.HitChance.High) then
+            if not blockList[hero.Handle] and Spells.W:CastOnHitChance(hero, Enums.HitChance.Low) then
                 blockList[hero.Handle] = Game.GetTime()
                 return
             end
@@ -239,7 +244,7 @@ function Caitlyn.ComboLogic(mode)
     local enemiesAround = CountHeroesInRange(pPos, pRange, "enemy")
     if Caitlyn.IsEnabledAndReady("Q", mode) and enemiesAround <= Menu.Get(mode..".SafeQ") then
         for k, hero in ipairs(Spells.Q:GetTargets()) do
-            if Spells.Q:CastOnHitChance(hero, Enums.HitChance.High) then
+            if Spells.Q:CastOnHitChance(hero, Enums.HitChance.Low) then
                 return
             end
         end
@@ -271,7 +276,7 @@ function Caitlyn.OnGapclose(source, dash)
     if not source.IsEnemy then return end
 
     if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.AutoW") then
-        if Spells.W:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+        if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
             blockList[source.Handle] = Game.GetTime()
             return
         end
@@ -284,13 +289,13 @@ function Caitlyn.OnGapclose(source, dash)
 
     if pDist < 500 and pDist < pPos:Distance(dash.StartPos) and source:IsFacing(pPos) then
         if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.GapW") then
-            if Spells.W:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+            if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
                 blockList[source.Handle] = Game.GetTime()
                 return
             end
         end
         if Spells.E:IsReady() and Menu.Get("Misc.GapE") then
-            if Spells.E:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+            if Spells.E:CastOnHitChance(source, Enums.HitChance.Low) then
                 return
             end
         end
@@ -300,13 +305,13 @@ function Caitlyn.OnHeroImmobilized(source, endT)
     if not source.IsEnemy then return end
 
     if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.AutoW") then
-        if Spells.W:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+        if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
             blockList[source.Handle] = Game.GetTime()
             return
         end
     end
     if Spells.Q:IsReady() and Menu.Get("Misc.AutoQ") then
-        if Spells.Q:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+        if Spells.Q:CastOnHitChance(source, Enums.HitChance.Low) then
             return
         end
     end
