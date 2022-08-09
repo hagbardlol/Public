@@ -6,7 +6,7 @@ if Player.CharName ~= "Varus" then return end
 
 module("Unruly Varus", package.seeall, log.setup)
 clean.module("Unruly Varus", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVarus.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVarus.lua", "1.0.5")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -311,7 +311,7 @@ function Varus.Auto()
     if spells.R:IsReady() and Menu.Get("Misc.ForceR") then
         local rTargets = Varus.GetTargets(spells.R.Range)
         for k, rTarget in ipairs(rTargets) do
-            if spells.R:CastOnHitChance(rTarget, Enums.HitChance.High) then
+            if spells.R:CastOnHitChance(rTarget, Enums.HitChance.Low) then
                 return
             end
         end
@@ -345,13 +345,13 @@ function Varus.OnGapclose(source, dash)
 
     if pDist < 400 and pDist < pPos:Distance(dash.StartPos) and source:IsFacing(pPos) then
         if Menu.Get("Misc.GapR") and spells.R:IsReady() then
-            if spells.R:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+            if spells.R:CastOnHitChance(source, Enums.HitChance.Low) then
                 return
             end
         end
     
         if Menu.Get("Misc.GapE") and spells.E:IsReady() then
-            if spells.E:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+            if spells.E:CastOnHitChance(source, Enums.HitChance.Low) then
                 return
             end
         end              
@@ -385,67 +385,72 @@ end
 function Varus.LoadMenu()
     Menu.RegisterMenu("UnrulyVarus", "Unruly Varus", function()
         Menu.ColumnLayout("cols", "cols", 3, true, function()
-            Menu.Separator("Combo", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ",   "Use [Q]", true)
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
             Menu.Indent(function()
                 Menu.Checkbox("Combo.MaxQ", "Only Max Range", true)
                 Menu.Checkbox("Combo.StacksQ", "Only Max Stacks", false)
                 Menu.Slider("Combo.ChanceQ", "HitChance", 0.35, 0, 1, 0.05)
-            end) 
-                
-            Menu.Checkbox("Combo.UseW",   "Use [W]", true)            
-            Menu.Checkbox("Combo.UseE",   "Use [E]", true)   
+            end)
+            Menu.Checkbox("Combo.UseW", "Use [W]", true)
+            Menu.Checkbox("Combo.UseE", "Use [E]", true)
             Menu.Indent(function()
                 Menu.Slider("Combo.ChanceE", "HitChance [E]", 0.35, 0, 1, 0.05)
-            end) 
-            
-            Menu.Checkbox("Combo.UseR", "Use [R]", true)  
-            Menu.Indent(function()                
-                Menu.Slider("Combo.ChanceR", "HitChance [R]", 0.50, 0, 1, 0.05) 
-                Menu.Slider("Combo.MinR", "If X Enemies Hit", 3, 1, 5)               
-                Menu.Checkbox("Combo.DangerousR", "When Dangerous", true)               
-            end) 
-            Menu.NextColumn()
+            Menu.Checkbox("Combo.UseR", "Use [R]", true)
+            end)
+            Menu.Indent(function()
+                Menu.Slider("Combo.ChanceR", "HitChance [R]", 0.50, 0, 1, 0.05)
+                Menu.Slider("Combo.MinR", "If X Enemies Hit", 3, 1, 5)
+                Menu.Checkbox("Combo.DangerousR", "When Dangerous", true)
+            end)
+            end)
 
-            Menu.Separator("Harass", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ",   "Use [Q]", true)
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
             Menu.Indent(function()
                 Menu.Checkbox("Harass.MaxQ", "Only Max Range", true)
                 Menu.Checkbox("Harass.StacksQ", "Only Max Stacks", true)
                 Menu.Slider("Harass.ChanceQ", "HitChance", 0.35, 0, 1, 0.05)
-            end) 
-                
-            Menu.Checkbox("Harass.UseW",   "Use [W]", true)            
-            Menu.Checkbox("Harass.UseE",   "Use [E]", true)   
+            end)
+            Menu.Checkbox("Harass.UseW", "Use [W]", true)
+            Menu.Checkbox("Harass.UseE", "Use [E]", true)
             Menu.Indent(function()
                 Menu.Slider("Harass.ChanceE", "HitChance [E]", 0.35, 0, 1, 0.05)
-            end) 
+            end)
+            end)
 
-            Menu.NextColumn()
-
-            Menu.Separator("Clear", 0xFFD700FF, true)
+            Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
+            Menu.Separator("Lane Clear Settings")
             Menu.Checkbox("Clear.JungleQ", "Use [Q] Jungle", true)
             Menu.Checkbox("Clear.JungleE", "Use [E] Jungle", true)
-            Menu.Checkbox("Clear.PushQ",   "Use [Q] Push", true)            
-            Menu.Checkbox("Clear.PushE",   "Use [E] Push", true)
-        end)    
+            Menu.Checkbox("Clear.PushQ", "Use [Q] Push", true)
+            Menu.Checkbox("Clear.PushE", "Use [E] Push", true)
+            end)
 
-        Menu.Separator("Misc Options", 0xFFD700FF, true)
-        Menu.Checkbox("Misc.ObvMode", "Obvious Scripter Mode", true)      
-        Menu.Checkbox("Misc.AutoQ", "Auto [Q] Immobile", true)      
-        Menu.Checkbox("Misc.AutoR", "Auto [R] Chain CC", true)      
-        Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true)      
-        Menu.Checkbox("Misc.GapR", "Use [R] Gapclose", true)      
-        Menu.Keybind("Misc.ForceR", "Force [R] Key", string.byte('T'))
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.ObvMode", "Obvious Scripter Mode", true)      
+            Menu.Checkbox("Misc.AutoQ", "Auto [Q] Immobile", true)      
+            Menu.Checkbox("Misc.AutoR", "Auto [R] Chain CC", true)      
+            Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true)      
+            Menu.Checkbox("Misc.GapR", "Use [R] Gapclose", true)      
+            Menu.Keybind("Misc.ForceR", "Force [R] Key", string.byte('T'))
+            end)
 
-        Menu.Separator("Draw Options", 0xFFD700FF, true)
-        Menu.Checkbox("Drawing.Q.Enabled",   "Draw [Q] Range")
-        Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
-        Menu.Checkbox("Drawing.E.Enabled",   "Draw [E] Range")
-        Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF)    
-        Menu.Checkbox("Drawing.R.Enabled",   "Draw [R] Range")
-        Menu.ColorPicker("Drawing.R.Color", "Draw [R] Color", 0xFFD166FF)    
-    end)     
+            Menu.NewTree("Drawing Options", "Drawing Options", function()
+            Menu.Separator("Drawing Options")
+            Menu.Checkbox("Drawing.Q.Enabled", "Draw [Q] Range", true)
+            Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
+            Menu.Checkbox("Drawing.E.Enabled", "Draw [E] Range", true)
+            Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF)    
+            Menu.Checkbox("Drawing.R.Enabled", "Draw [R] Range", true)
+            Menu.ColorPicker("Drawing.R.Color", "Draw [R] Color", 0xFFD166FF)
+        end)
+            end)
+            Menu.Separator("Author: Thorn")
+        end)
 end
 
 function OnLoad()
