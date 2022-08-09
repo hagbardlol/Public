@@ -2,7 +2,7 @@ if Player.CharName ~= "Sion" then return end
 
 module("UnrulySion", package.seeall, log.setup)
 clean.module("UnrulySion", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulySion.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulySion.lua", "1.0.4")
 
 local insert = table.insert
 local max, min = math.max, math.min
@@ -95,20 +95,20 @@ function Sion.CheckPolygon(castPos, targets, time)
         end
     end
 
-    Hitbox:Draw()
-    Renderer.DrawTextOnTopLeft("HitValue: " .. res.HitValue)
-    Renderer.DrawTextOnTopLeft("WillHit: "  .. res.WillHit)
-    Renderer.DrawTextOnTopLeft("Entering: " .. res.Entering)
-    Renderer.DrawTextOnTopLeft("Leaving: "  .. res.Leaving)
+    --Hitbox:Draw()
+    --Renderer.DrawTextOnTopLeft("HitValue: " .. res.HitValue)
+    --Renderer.DrawTextOnTopLeft("WillHit: "  .. res.WillHit)
+    --Renderer.DrawTextOnTopLeft("Entering: " .. res.Entering)
+    --Renderer.DrawTextOnTopLeft("Leaving: "  .. res.Leaving)
 
     return res
 end
 
 function Sion.LoadMenu()
     Menu.RegisterMenu("UnrulySion", "Unruly Sion", function ()
-
-        Menu.ColumnLayout("cols", "cols", 4, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
+        Menu.ColumnLayout("cols", "cols", 2, true, function()
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
             Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
             Menu.Indent(function() 
                 Menu.Slider("Combo.MinQ", "Min", 1, 1, 5)
@@ -116,52 +116,53 @@ function Sion.LoadMenu()
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
             Menu.Checkbox("Combo.UseE", "Use [E]", true)
             Menu.Checkbox("Combo.UseR", "Use [R]", true)  
-            Menu.ColoredText("  Only Melee!", 0xFFD700FF)
+            Menu.Separator("Only Melee!")
+        end)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
             Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
             Menu.Indent(function() 
                 Menu.Slider("Harass.MinQ", "Min", 1, 1, 5)
             end) 
             Menu.Checkbox("Harass.UseW", "Use [W]", false)
             Menu.Checkbox("Harass.UseE", "Use [E]", true)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Farm", 0xFFD700FF, true)
+            Menu.NewTree("Wave Clear Settings", "Wave Clear Settings", function()
+            Menu.Separator("Wave Clear Settings")
             Menu.Checkbox("Clear.FarmQ",   "Use [Q]", true)
             Menu.Checkbox("Clear.FarmE",   "Use [E]", true)
-            Menu.ColoredText("FastClear", 0xFFD700FF, true)
+            Menu.Separator("FastClear")
             Menu.Checkbox("Clear.PushQ",   "Use [Q]", true)          
             Menu.Checkbox("Clear.PushW",   "Use [W]", true)
             Menu.Checkbox("Clear.PushE",   "Use [E]", true)
-
-            Menu.NextColumn()
+        end)
             
-            Menu.ColoredText("Jungle", 0xFFD700FF, true)
+            Menu.NewTree("Jungle Settings", "Jungle Settings", function()
+            Menu.Separator("Jungle Settings")
             Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)       
             Menu.Checkbox("Jungle.UseW",   "Use [W]", true)
             Menu.Checkbox("Jungle.UseE",   "Use [E]", true)
-            Menu.ColoredText("Flee", 0xFFD700FF, true)
+            Menu.Separator("Flee")
             Menu.Checkbox("Flee.UseW",   "Use [W]", true)             
             Menu.Checkbox("Flee.UseE",   "Use [E]", true)             
-        end)    
+        end)
 
-        Menu.Separator()
-
-        Menu.NewTree("DrawTree", "Drawing Settings", function()
+            Menu.NewTree("Drawing Settings", "Drawing Settings", function()
+            Menu.Separator("Drawing Settings")
             Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", true)
             Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF) 
             Menu.Checkbox("Drawing.W.Enabled",  "Draw [W] Range", true)
             Menu.ColorPicker("Drawing.W.Color", "Color [W]", 0x118AB2FF)   
             Menu.Checkbox("Drawing.E.Enabled",  "Draw [E] Range", true) 
             Menu.ColorPicker("Drawing.E.Color", "Color [E]", 0xFFD166FF)
-            Menu.Checkbox("Drawing.R_MM.Enabled",  "Draw [R] Minimap", true) 
+            Menu.Checkbox("Drawing.R_MM.Enabled",  "Draw [R] Minimap", false) 
             Menu.ColorPicker("Drawing.R_MM.Color", "Color [R] Minimap", 0xFFD166FF)
         end)
-    end)
+            Menu.Separator("Author: Thorn")
+        end)
 end
 
 function Sion.Combo(lagfree)  Sion.ComboLogic("Combo", lagfree)  end
@@ -174,7 +175,7 @@ function Sion.Flee(lagfree)
     end 
     if lagfree == 2 and IsEnabledAndReady("E", "Flee") then
         for k, eTarg in ipairs(spells.E:GetTargets()) do
-            if spells.E:CastOnHitChance(eTarg, Enums.HitChance.High) then
+            if spells.E:CastOnHitChance(eTarg, Enums.HitChance.Low) then
                 return
             end
         end
@@ -249,7 +250,7 @@ function Sion.ComboLogic(mode, lagfree)
     if lagfree == 2 and IsEnabledAndReady("E", mode) then
         for k, eTarg in ipairs(spells.E2:GetTargets()) do
             local pred = spells.E2:GetPrediction(eTarg)
-            if pred and pred.HitChanceEnum >= Enums.HitChance.High then
+            if pred and pred.HitChanceEnum >= Enums.HitChance.Low then
                 if #pred.CollisionObjects >= 1 or spells.E:IsInRange(pred.CastPosition) then
                     if spells.E:Cast(pred.CastPosition) then
                         return
