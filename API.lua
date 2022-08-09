@@ -794,7 +794,7 @@ _G.CoreEx.Renderer = Renderer
 ---@field IsMinimized fun():boolean
 ---@field IsChatOpen fun():boolean
 ---@field IsShopOpen fun():boolean
----@field SendChat fun(msg:string):nil
+---@field GetTeamDragonCount fun(team: number, dragonType: Enums_DragonTypes)
 ---@field IsTFT fun():boolean
 ---@field IsRankedGame fun():boolean
 ---@field IsCustomGame fun():boolean
@@ -1183,6 +1183,17 @@ _G.CoreEx.Enums.GameMaps = GameMaps
 local QueueTypes
 _G.CoreEx.Enums.QueueTypes = QueueTypes
 
+---@class Enums_DragonTypes
+---@field All number
+---@field Hextech number
+---@field Fire number
+---@field Air number
+---@field Water number
+---@field Earth number
+---@field Elder number
+local DragonTypes
+_G.CoreEx.Enums.DragonTypes = DragonTypes
+
 --[[
     ██████   █████  ███████ ██   ██     ██      ██ ██████  
     ██   ██ ██   ██ ██      ██   ██     ██      ██ ██   ██ 
@@ -1472,6 +1483,7 @@ _G.Libs.Profiler = Profiler
 ---@field GetDamage fun(self:SpellBase, target:AIBaseClient, stage:string|nil):number
 ---@field GetHealthPred fun(self:SpellBase, target:AIBaseClient):number
 ---@field CanCast fun(self:SpellBase, target:AIBaseClient):boolean
+---@field IsValidTarget fun(self:SpellBase, target:AIBaseClient):boolean
 ---@field IsInRange fun(self:SpellBase, pos_or_target:AIBaseClient|Vector):boolean
 ---@field IsLeavingRange fun(self:SpellBase, target:AIBaseClient):boolean
 ---@field CanKillTarget fun(self:SpellBase, target:AIBaseClient, stage: string|nil, extraDmg:number|nil):boolean
