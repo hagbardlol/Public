@@ -2,7 +2,7 @@ if Player.CharName ~= "Leona" then return end
 
 module("UnrulyLeona", package.seeall, log.setup)
 clean.module("UnrulyLeona", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyLeona.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyLeona.lua", "1.0.5")
 
 local insert = table.insert
 local max, min = math.max, math.min
@@ -27,7 +27,7 @@ local spells = {
     }),
     E = Spell.Skillshot({
         Slot            = Enums.SpellSlots.E,
-        Range           = 875,
+        Range           = 900,
         Speed           = 2000,
         Radius          = 70,
         Delay           = 0.25,
@@ -60,63 +60,67 @@ end
 function Leona.LoadMenu()
     Menu.RegisterMenu("UnrulyLeona", "Unruly Leona", function ()
         Menu.ColumnLayout("cols", "cols", 4, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
-            Menu.Checkbox("Combo.UseE", "Use [E]", true)  
+            Menu.Checkbox("Combo.UseE", "Use [E]", true)
             Menu.Checkbox("Combo.UseR", "Use [R]", true)
             Menu.Indent(function()
                 Menu.Checkbox("ComboR.Duel", "Whitelist", true)
-                Menu.Slider("ComboR.MinHit", "Min Hit", 3, 2, 5)  
-            end)
+                Menu.Slider("ComboR.MinHit", "Min Hit", 3, 2, 5)
+        end)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
             Menu.Checkbox("Harass.UseW", "Use [W]", true)
             Menu.Checkbox("Harass.UseE", "Use [E]", false)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("FastClear", 0xFFD700FF, true)
-            Menu.Checkbox("Clear.PushQ",   "Use [Q]", true)          
-            Menu.Checkbox("Clear.PushW",   "Use [W]", true)
-            Menu.Checkbox("Clear.PushE",   "Use [E]", true)         
+            Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
+            Menu.Separator("Lane Clear Settings")
+            Menu.Checkbox("Clear.PushQ", "Use [Q]", true)
+            Menu.Checkbox("Clear.PushW", "Use [W]", true)
+            Menu.Checkbox("Clear.PushE", "Use [E]", true)
+        end)
             
-            Menu.ColoredText("Jungle", 0xFFD700FF, true)
-            Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)       
-            Menu.Checkbox("Jungle.UseW",   "Use [W]", true)     
-            
-            Menu.NextColumn()
+            Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
+            Menu.Separator("Jungle Clear Settings")
+            Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)
+            Menu.Checkbox("Jungle.UseW",   "Use [W]", true)
+        end)
 
-            Menu.ColoredText("Misc", 0xFFD700FF, true)
-            Menu.Checkbox("Misc.GapE", "[E] AntiGap", true) 
-            Menu.Checkbox("Misc.IntE", "[E] Interrupt", true) 
-            Menu.Checkbox("Misc.GapR", "[R] AntiGap", true) 
-            Menu.Checkbox("Misc.IntR", "[R] Interrupt", true) 
-
-            Menu.ColoredText("Whitelist [R]", 0xFFD700FF, true)
-            local added = {}
-            for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
-                local charName = v.CharName
-                if not added[charName] then
-                    added[charName] = true
-                    Menu.Checkbox("ComboR.Duel." .. charName, charName, TS:GetPriority(v) >= 2)
-                end
-            end
-        end)    
-
-        Menu.Separator()
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.GapE", "[E] AntiGap", true)
+            Menu.Checkbox("Misc.IntE", "[E] Interrupt", true)
+            Menu.Checkbox("Misc.GapR", "[R] AntiGap", true)
+            Menu.Checkbox("Misc.IntR", "[R] Interrupt", true)
+        end)
+            --Menu.Separator("Whitelist [R]")
+            --local added = {}
+            --for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
+                --local charName = v.CharName
+                --if not added[charName] then
+                    --added[charName] = true
+                    --Menu.Checkbox("ComboR.Duel." .. charName, charName, TS:GetPriority(v) >= 2)
+                --end
+            --end
+        end)
 
         Menu.NewTree("DrawTree", "Drawing Settings", function()
-            Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", true)
-            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF) 
+            Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", false)
+            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF)
             Menu.Checkbox("Drawing.W.Enabled",  "Draw [W] Range", true)
-            Menu.ColorPicker("Drawing.W.Color", "Color [W]", 0x118AB2FF)   
-            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true) 
+            Menu.ColorPicker("Drawing.W.Color", "Color [W]", 0x118AB2FF)
+            Menu.Checkbox("Drawing.E.Enabled",  "Draw [E] Range", true)
+            Menu.ColorPicker("Drawing.E.Color", "Color [E]", 0x118AB2FF)
+            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true)
             Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF)
         end)
+            Menu.Separator("Author: Thorn")
     end)
 end
 
@@ -186,7 +190,7 @@ function Leona.ComboLogic(mode, lagfree)
     end 
     if lagfree == 3 and IsEnabledAndReady("E", mode) then
         for k, eTarget in ipairs(spells.E:GetTargets()) do
-            if not IsSpellShielded(eTarget) and spells.E:CastOnHitChance(eTarget, Enums.HitChance.High) then
+            if not IsSpellShielded(eTarget) and spells.E:CastOnHitChance(eTarget, Enums.HitChance.Low) then
                 return
             end
         end
@@ -199,7 +203,7 @@ function Leona.ComboLogic(mode, lagfree)
             for k, rTarg in ipairs(spells.R:GetTargets()) do
                 local whitelist = Menu.Get("ComboR.Duel." .. rTarg.CharName, true)
                 if whitelist and not IsSpellShielded(rTarg) then
-                    if spells.R:CastOnHitChance(rTarg, Enums.HitChance.VeryHigh) then
+                    if spells.R:CastOnHitChance(rTarg, Enums.HitChance.Low) then
                         return
                     end
                 end
@@ -243,12 +247,12 @@ end
 function Leona.OnGapclose(source, dashInst)
     if not source.IsEnemy then return end
     if Menu.Get("Misc.GapE") and spells.E:IsReady() then 
-        if spells.E:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+        if spells.E:CastOnHitChance(source, Enums.HitChance.Low) then
             return
         end
     end
     if Menu.Get("Misc.GapR") and spells.R:IsReady() then 
-        if spells.R:CastOnHitChance(source, Enums.HitChance.VeryHigh) then
+        if spells.R:CastOnHitChance(source, Enums.HitChance.Low) then
             return
         end
     end
@@ -258,12 +262,12 @@ function Leona.OnInterruptibleSpell(Source, SpellCast, Danger, EndTime, CanMoveD
     if Danger < 3 or CanMoveDuringChannel or not Source.IsEnemy then return end
 
     if Menu.Get("Misc.IntE") and spells.E:IsReady() then 
-        if spells.E:CastOnHitChance(Source, Enums.HitChance.VeryHigh) then
+        if spells.E:CastOnHitChance(Source, Enums.HitChance.Low) then
             return
         end
     end    
     if Menu.Get("Misc.IntR") and spells.R:IsReady() then 
-        if spells.R:CastOnHitChance(Source, Enums.HitChance.VeryHigh) then
+        if spells.R:CastOnHitChance(Source, Enums.HitChance.Low) then
             return
         end
     end
