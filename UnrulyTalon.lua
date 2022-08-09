@@ -2,7 +2,7 @@ if Player.CharName ~= "Talon" then return end
 
 module("UnrulyTalon", package.seeall, log.setup)
 clean.module("UnrulyTalon", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyTalon.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyTalon.lua", "1.0.4")
 
 local insert = table.insert
 local max, min = math.max, math.min
@@ -62,48 +62,58 @@ end
 
 function Talon.LoadMenu()
     Menu.RegisterMenu("UnrulyTalon", "Unruly Talon", function ()
-
         Menu.ColumnLayout("cols", "cols", 4, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
+           Menu.NewTree("Drawing Options", "Drawing Options", function()
+            Menu.Separator("Drawing Options")
+            Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", true)
+            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF) 
+            Menu.Checkbox("Drawing.W.Enabled",  "Draw [W] Range", true)
+            Menu.ColorPicker("Drawing.W.Color", "Color [W]", 0x118AB2FF)   
+            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true) 
+            Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF)
+        end)
+
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
             Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
             Menu.Checkbox("Combo.UseR", "Use [R]", true)  
+        end)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
             Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
             Menu.Checkbox("Harass.UseW", "Use [W]", true)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Farm", 0xFFD700FF, true)
+            Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
+            Menu.Separator("Lane Clear Settings")
             Menu.Checkbox("Clear.FarmQ",   "Use [Q]", true)
             Menu.Checkbox("Clear.FarmW",   "Use [W]", true)
-            Menu.ColoredText("FastClear", 0xFFD700FF, true)
+            Menu.Separator("FastClear")
             Menu.Checkbox("Clear.PushQ",   "Use [Q]", true)          
             Menu.Checkbox("Clear.PushW",   "Use [W]", true)
-
-            Menu.NextColumn()
+        end)
             
-            Menu.ColoredText("Jungle", 0xFFD700FF, true)
+            Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
+            Menu.Separator("Jungle Clear Settings")
             Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)       
             Menu.Checkbox("Jungle.UseW",   "Use [W]", true)
-            Menu.ColoredText("Flee", 0xFFD700FF, true)
+            Menu.Separator("Flee")
             Menu.Checkbox("Flee.UseE",   "Use [E]", true)             
         end)    
 
-        Menu.Separator()
-
         Menu.ColumnLayout("cols2", "cols2", 2, true, function()
-            Menu.ColoredText("Settings [R]", 0xFFD700FF, true)
+            Menu.NewTree("R Settings", "R Settings", function()
+            Menu.Separator("Settings [R]")
             Menu.Checkbox("ComboR.Surrounded", "When Surrounded", true) 
             Menu.Indent(function() 
                 Menu.Slider("ComboR.SurroundedMin", "Min X Enemies", 3, 2, 5)
             end)                 
             Menu.Checkbox("ComboR.Duel", "To Duel", true) 
             Menu.SameLine()
-            Menu.ColoredText("Left Click Target!", 0xFF0000FF)
+            Menu.Separator("Left Click Target!", 0xFF0000FF)
 
             Menu.Indent(function()
                 local added = {}
@@ -115,25 +125,13 @@ function Talon.LoadMenu()
                     end
                 end
             end) 
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Burst Combo", 0xFFD700FF, true)
-            Menu.ColoredText("Left Click Target!", 0xFF0000FF, true)
-            Menu.Keybind("Burst.Key", "Burst Key", string.byte('T'), false, false, true)
-            Menu.Checkbox("Burst.Flash", "Use Flash", true)              
-        end)          
-
-        Menu.Separator()
-
-        Menu.NewTree("DrawTree", "Drawing Settings", function()
-            Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", true)
-            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF) 
-            Menu.Checkbox("Drawing.W.Enabled",  "Draw [W] Range", true)
-            Menu.ColorPicker("Drawing.W.Color", "Color [W]", 0x118AB2FF)   
-            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true) 
-            Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF)
         end)
+            Menu.NextColumn()
+            Menu.Separator("Left Click Target!")
+            Menu.Keybind("Burst.Key", "Burst Key", string.byte('T'), false, false, true)
+            Menu.Checkbox("Burst.Flash", "Use Flash", true)
+        end)
+            Menu.Separator("Author: Thorn")
     end)
 end
 
@@ -271,7 +269,7 @@ end
 function Talon.ComboLogic(mode, lagfree)     
     if lagfree == 1 and IsEnabledAndReady("W", mode) then
         for k, wTarget in ipairs(spells.W:GetTargets()) do
-            if spells.W:CastOnHitChance(wTarget, Enums.HitChance.High) then
+            if spells.W:CastOnHitChance(wTarget, Enums.HitChance.Low) then
                 return
             end
         end
