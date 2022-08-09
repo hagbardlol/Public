@@ -6,7 +6,7 @@ if Player.CharName ~= "Darius" then return end
 
 module("Unruly Darius", package.seeall, log.setup)
 clean.module("Unruly Darius", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.5")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.6")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -51,23 +51,10 @@ local spells = {
     })
 }
 
--- local rocketSprite = Renderer.CreateSprite("Rocket.png", 256, 256)
-
 local function GameIsAvailable()
     return not (Game.IsChatOpen() or Game.IsMinimized() or Player.IsDead or Player.IsRecalling)
 end
-local function CountHeroesInRange(team, range)
-    return #(TS:GetValidTargets(range, ObjManager.Get(team, "heroes"), false))
-end
 
-function Darius.GetDamageR(target)
-    local rawDmg = (100 * spells.R:GetLevel()) + (0.75 * Player.BonusAD)
-    local buff = target:GetBuff("DariusHemo")
-    if buff then
-        rawDmg = rawDmg * (1 + 0.2 * buff.Count)
-    end    
-    return rawDmg
-end
 function Darius.IsEnabledAndReady(spell, mode)
     return Menu.Get(mode..".Use"..spell) and spells[spell]:IsReady()
 end
@@ -86,11 +73,8 @@ function Darius.OnTick()
         ModeToExecute()
     end
 end
-function Darius.OnDraw() 
-    --rocketSprite:Draw(Renderer.GetCursorPos(), 0, true)
-
+function Darius.OnDraw()
     local playerPos = Player.Position
-    local pRange = Orbwalker.GetTrueAutoAttackRange(Player)   
     
     for k, v in pairs(spells) do
         if Menu.Get("Drawing."..k..".Enabled", true) then
@@ -115,11 +99,9 @@ function Darius.Auto()
     end
 
     if Orbwalker.GetMode() == "Combo" and Darius.IsEnabledAndReady("R", "Combo") then
-        for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
-            local hero = v.AsHero
-            if hero and TS:IsValidTarget(hero, spells.R.Range) then    
-                local killHealth = HealthPred.GetKillstealHealth(hero, spells.R.Delay, Enums.DamageTypes.True)
-                if Darius.GetDamageR(hero) > killHealth and spells.R:Cast(hero) then
+        for k, hero in ipairs(ObjManager.GetNearby("enemy", "heroes")) do
+            if TS:IsValidTarget(hero, spells.R.Range) then    
+                if spells.R:CanKillTarget(hero) and spells.R:Cast(hero) then
                     return true
                 end
             end
@@ -147,8 +129,8 @@ function Darius.ComboLogic(mode)
     end
 end
 
-function Darius.Combo()     Darius.ComboLogic("Combo")  end
-function Darius.Harass()    Darius.ComboLogic("Harass") end
+function Darius.Combo()  Darius.ComboLogic("Combo")  end
+function Darius.Harass() Darius.ComboLogic("Harass") end
 
 ---@param _target AttackableUnit
 function Darius.OnPostAttack(_target)
