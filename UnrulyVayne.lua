@@ -6,7 +6,7 @@ if Player.CharName ~= "Vayne" then return end
 
 module("Unruly Vayne", package.seeall, log.setup)
 clean.module("Unruly Vayne", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVayne.lua", "1.0.3")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyVayne.lua", "1.0.4")
 
 local insert = table.insert
 local min, max = math.min, math.max
@@ -191,7 +191,7 @@ function Vayne.CondemnChance(target, from)
     if not Vayne.CanCondemn(tPos, from) then return -1 end
 
     local pred = spells.E_Pred:GetPrediction(target)
-    if pred and pred.HitChanceEnum >= Enums.HitChance.High then
+    if pred and pred.HitChanceEnum >= Enums.HitChance.Low then
         return (Vayne.CanCondemn(pred.TargetPosition, from) and pred.HitChanceEnum) or -1
     else
         local colChance, maxCols = 0, 8
@@ -420,47 +420,54 @@ end
 function Vayne.LoadMenu()
     Menu.RegisterMenu("UnrulyVayne", "Unruly Vayne", function()
         Menu.ColumnLayout("cols", "cols", 3, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
-            Menu.Dropdown("Combo.LogicQ", "[Q] Logic", 0, {"Unruly", "To Mouse", "Kiting Only"}) 
-            Menu.Checkbox("Combo.UseE", "Use [E] To Stun", true) 
-            Menu.Checkbox("Combo.UseR", "Use [R]", true) 
-            Menu.Slider("Combo.MinR", "Min Enemies Nearby", 2, 1, 5) 
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ",   "Use [Q]", true) 
-            Menu.Dropdown("Harass.LogicQ", "[Q] Logic", 0, {"Unruly", "To Mouse", "Kiting Only"}) 
-            Menu.Checkbox("Harass.UseE",   "Use [E] To Stun", false) 
-            Menu.Checkbox("Harass.ProcE",  "Use [E] To Proc [W]", true) 
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Clear", 0xFFD700FF, true)
-            Menu.Checkbox("Clear.JungleQ", "Use [Q] Jungle", true) 
-            Menu.Checkbox("Clear.PushQ",   "Use [Q] Push", false) 
-            Menu.Checkbox("Clear.TurretQ", "Use [Q] On Turrets", true) 
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
+            Menu.Dropdown("Combo.LogicQ", "[Q] Logic", 0, {"Unruly", "To Mouse", "Kiting Only"})
+            Menu.Checkbox("Combo.UseE", "Use [E] To Stun", true)
+            Menu.Checkbox("Combo.UseR", "Use [R]", true)
+            Menu.Slider("Combo.MinR", "Min Enemies Nearby", 2, 1, 5)
+        end)
         end)
 
-        Menu.Separator()
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ",   "Use [Q]", true)
+            Menu.Dropdown("Harass.LogicQ", "[Q] Logic", 0, {"Unruly", "To Mouse", "Kiting Only"})
+            Menu.Checkbox("Harass.UseE",   "Use [E] To Stun", false)
+            Menu.Checkbox("Harass.ProcE",  "Use [E] To Proc [W]", true)
+        end)
+
+            Menu.NewTree("Clear Settings", "Clear Settings", function()
+            Menu.Separator("Clear Settings")
+            Menu.Checkbox("Clear.JungleQ", "Use [Q] Jungle", true)
+            Menu.Checkbox("Clear.PushQ",   "Use [Q] Push", false)
+            Menu.Checkbox("Clear.TurretQ", "Use [Q] On Turrets", true)
+        end)
+
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.ObvMode", "Obvious Scripter Mode", true)
+            Menu.Checkbox("Misc.StayInv", "Stay Inv. Dangerous", true)
+            Menu.Checkbox("Misc.AutoE", "Auto [E] Stun", true)
+            Menu.Dropdown("Misc.ChanceE", "Stun Chance", 1, {"Low", "Normal", "High", "Very High", "Guaranteed"})
+            Menu.Checkbox("Misc.GapQ",  "Use [Q] Gapclose", true)
+            Menu.Checkbox("Misc.GapE",  "Use [E] Gapclose", false)
+            Menu.Checkbox("Misc.IntE",  "Use [E] Interrupt", true)
+        end)
+
+            Menu.NewTree("Draw Options", "Draw Options", function()
+            Menu.Separator("Draw Options")
+            Menu.Checkbox("Drawing.Q.Enabled",   "Draw [Q] Range", true)  -- Done
+            Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF)  -- Done
+            Menu.Checkbox("Drawing.E.Enabled",   "Draw [E] Range")  -- Done
+            Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF)  -- Done
+        end)
 
         Menu.ColumnLayout("cols2", "cols2", 3, true, function()
-            Menu.ColoredText("Misc Options", 0xFFD700FF, true)
-            Menu.Checkbox("Misc.ObvMode", "Obvious Scripter Mode", true) 
-            Menu.Checkbox("Misc.StayInv", "Stay Inv. Dangerous", true) 
-            Menu.Checkbox("Misc.AutoE", "Auto [E] Stun", true) 
-            Menu.Dropdown("Misc.ChanceE", "Stun Chance", 2, {"Low", "Normal", "High", "Very High", "Guaranteed"}) 
-            Menu.Checkbox("Misc.GapQ",  "Use [Q] Gapclose", true) 
-            Menu.Checkbox("Misc.GapE",  "Use [E] Gapclose", true) 
-            Menu.Checkbox("Misc.IntE",  "Use [E] Interrupt", true) 
-            
-            Menu.NextColumn()
-
-
-            Menu.ColoredText("Peel Options", 0xFFD700FF, true)
-            Menu.Checkbox("Peel.Q", "Use [Q] For Peel", true) 
-            Menu.Checkbox("Peel.E", "Use [E] For Peel", false) 
+            Menu.Separator("Peel Options")
+            Menu.Checkbox("Peel.Q", "Use [Q] For Peel", true)
+            Menu.Checkbox("Peel.E", "Use [E] For Peel", false)
             Menu.Indent(function()
                 local alreadyAdded = {}
                 for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
@@ -468,33 +475,25 @@ function Vayne.LoadMenu()
                     if not alreadyAdded[name] then
                         Menu.Checkbox("Peel." .. name, name, false)
                     end
-                    alreadyAdded[name] = true                    
+                    alreadyAdded[name] = true
                 end
             end)
 
             Menu.NextColumn()
 
-            Menu.ColoredText("Duel Options", 0xFFD700FF, true)
-            Menu.Checkbox("Duel.Enabled", "Use For Duel", true) 
+            Menu.Separator("Duel Options")
+            Menu.Checkbox("Duel.Enabled", "Use For Duel", true)
             Menu.Indent(function()
-                local alreadyAdded = {}                
+                local alreadyAdded = {}
                 for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
                     local name = v.AsHero.CharName
                     if not alreadyAdded[name] then
                         Menu.Checkbox("Duel." .. name, name, false)
                     end
-                    alreadyAdded[name] = true    
+                    alreadyAdded[name] = true
                 end
             end)
-        end)        
-
-        Menu.Separator()
-
-        Menu.ColoredText("Draw Options", 0xFFD700FF, true)
-        Menu.Checkbox("Drawing.Q.Enabled",   "Draw [Q] Range")  -- Done
-        Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF)  -- Done
-        Menu.Checkbox("Drawing.E.Enabled",   "Draw [E] Range")  -- Done
-        Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF)  -- Done
+        end)
     end)
 end
 
