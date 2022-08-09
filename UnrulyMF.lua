@@ -2,7 +2,7 @@ if Player.CharName ~= "MissFortune" then return end
 
 module("UnrulyMF", package.seeall, log.setup)
 clean.module("UnrulyMF", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyMF.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyMF.lua", "1.0.5")
 
 local insert = table.insert
 
@@ -71,61 +71,62 @@ end
 
 function MissFortune.LoadMenu()
     Menu.RegisterMenu("UnrulyMF", "Unruly MF", function ()
-
         Menu.ColumnLayout("cols", "cols", 4, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true) 
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
-            Menu.Checkbox("Combo.UseE", "Use [E]", true)  
+            Menu.Checkbox("Combo.UseE", "Use [E]", true)
             Menu.Checkbox("Combo.SwitchTarget", "[Passive]", false)
+        end)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ", "Use [Q]", true) 
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
             Menu.Checkbox("Harass.UseW", "Use [W]", false)
-            Menu.Checkbox("Harass.UseE", "Use [E]", true)  
+            Menu.Checkbox("Harass.UseE", "Use [E]", true)
             Menu.Checkbox("Harass.SwitchTarget", "[Passive]", true)
+        end)
 
-            Menu.NextColumn()
+            Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
+            Menu.Separator("Lane Clear Settings")
+            Menu.Checkbox("Clear.FarmQ", "Use [Q]", true)
+            Menu.Separator("FastClear", 0xFFD700FF, true)
+            Menu.Checkbox("Clear.PushQ", "Use [Q]", true)
+            Menu.Checkbox("Clear.PushW", "Use [W]", true)
+            Menu.Checkbox("Clear.PushE", "Use [E]", true)
+        end)
 
-            Menu.ColoredText("Farm", 0xFFD700FF, true)
-            Menu.Checkbox("Clear.FarmQ",   "Use [Q]", true)
-            Menu.ColoredText("FastClear", 0xFFD700FF, true)
-            Menu.Checkbox("Clear.PushQ",   "Use [Q]", true)          
-            Menu.Checkbox("Clear.PushW",   "Use [W]", true)
-            Menu.Checkbox("Clear.PushE",   "Use [E]", true)
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Turret", 0xFFD700FF, true)
-            Menu.Checkbox("Turret.UseW",   "Use [W]", true) 
-            Menu.ColoredText("Jungle", 0xFFD700FF, true)
-            Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)       
-            Menu.Checkbox("Jungle.UseW",   "Use [W]", true)
-            Menu.Checkbox("Jungle.UseE",   "Use [E]", false)
-            
-        end)    
-
-        Menu.Separator()
+            Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
+            Menu.Separator("Jungle Clear Settings")
+            Menu.Checkbox("Turret.UseW", "Use [W]", true)
+            Menu.Separator("Jungle", 0xFFD700FF, true)
+            Menu.Checkbox("Jungle.UseQ", "Use [Q]", true)
+            Menu.Checkbox("Jungle.UseW", "Use [W]", true)
+            Menu.Checkbox("Jungle.UseE", "Use [E]", false)
+        end)
 
         Menu.ColumnLayout("cols2", "cols2", 2, true, function()
-            Menu.ColoredText("Draw Options", 0xFFD700FF, true)
+            Menu.NewTree("Drawing Options", "Drawing Options", function()
+            Menu.Separator("Drawing Options")
             Menu.Checkbox("Drawing.Q.Enabled",  "Draw [Q] Range", true)
-            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF) 
+            Menu.ColorPicker("Drawing.Q.Color", "Color [Q]", 0xEF476FFF)
             Menu.Checkbox("Drawing.E.Enabled",  "Draw [E] Range", true)
-            Menu.ColorPicker("Drawing.E.Color", "Color [E]", 0x118AB2FF)   
-            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true) 
-            Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF) 
+            Menu.ColorPicker("Drawing.E.Color", "Color [E]", 0x118AB2FF)
+            Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true)
+            Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF)
+        end)
 
-            Menu.NextColumn()
-
-            Menu.ColoredText("Misc Options", 0xFFD700FF, true)   
-            Menu.Checkbox("Misc.BlockTargChange", "Dont Swap [Passive] If\nTarget Will Die Soon", true)  
-            Menu.Checkbox("Misc.AutoQ", "Auto [Q] Bounce Crit", true)      
-            Menu.Checkbox("Misc.UnkillableQ", "Auto [Q] Avoid Lose CS", true)      
-            Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true)      
-            Menu.Keybind("Misc.ForceR", "     Force [R] Key", string.byte('T'), false, false, true)
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.BlockTargChange", "Dont Swap [Passive] If\nTarget Will Die Soon", true)
+            Menu.Checkbox("Misc.AutoQ", "Auto [Q] Bounce Crit", true)
+            Menu.Checkbox("Misc.UnkillableQ", "Auto [Q] Avoid Lose CS", true)
+            Menu.Checkbox("Misc.GapE", "Use [E] Gapclose", true)
+            Menu.Keybind("Misc.ForceR", "Force [R] Key", string.byte('T'), false, false, true)
+        end)
+            Menu.Separator("Author: Thorn")
         end)
     end)
 end
@@ -177,7 +178,7 @@ function MissFortune.GetBounceTargetQ(unkillableOnly)
     local cones = {}
     for _, enemy in ipairs(targets) do        
         local pred = spells.Q_Pred:GetPrediction(enemy)
-        if pred and pred.HitChanceEnum >= Enums.HitChance.High then
+        if pred and pred.HitChanceEnum >= Enums.HitChance.Low then
             local targPos = pred.TargetPosition
             for i, bounceObj in ipairs(units) do
                 if not cones[i] then
@@ -333,7 +334,7 @@ function MissFortune.ComboLogic(mode, lagfree)
         for k, obj in ipairs(spells.E:GetTargets()) do
             local dist = pPos:FastDistance(obj.Position)
             if (dist < 600 and obj.IsMelee) or (dist > atkRange * 0.75) then
-                if spells.E:CastOnHitChance(obj, Enums.HitChance.High) then
+                if spells.E:CastOnHitChance(obj, Enums.HitChance.Low) then
                     return
                 end
             end
@@ -370,7 +371,7 @@ function MissFortune.OnGapclose(Source, DashInstance)
     end
     
     if IsRunningTowardsOrAway(Source, Player.Position) then
-        if spells.E:CastOnHitChance(Source, Enums.HitChance.High) then
+        if spells.E:CastOnHitChance(Source, Enums.HitChance.Low) then
             return
         end
     end
