@@ -6,7 +6,7 @@ if Player.CharName ~= "Kindred" then return end
 
 module("Unruly Kindred", package.seeall, log.setup)
 clean.module("Unruly Kindred", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyKindred.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyKindred.lua", "1.0.5")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -236,56 +236,59 @@ end
 function Kindred.LoadMenu()
     Menu.RegisterMenu("UnrulyKindred", "Unruly Kindred", function()
         Menu.ColumnLayout("cols", "cols", 3, true, function()
-            Menu.ColoredText("Combo", 0xFFD700FF, true)
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)    
-            Menu.Dropdown("Combo.ModeQ", "Mode [Q]", 0, {"Smart", "Cursor Position"}) 
+            Menu.NewTree("Combo Settings", "Combo Settings", function()
+            Menu.Separator("Combo Settings")
+            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
+            Menu.Dropdown("Combo.ModeQ", "Mode [Q]", 0, {"Smart", "Cursor Position"})
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
             Menu.Checkbox("Combo.UseE", "Use [E]", true)
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Harass", 0xFFD700FF, true)
-            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)    
-            Menu.Dropdown("Harass.ModeQ", "Mode [Q]", 0, {"Smart", "Cursor Position"}) 
-            Menu.Checkbox("Harass.UseW", "Use [W]", true)
-            Menu.Checkbox("Harass.UseE", "Use [E]", true)
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Jungle", 0xFFD700FF, true)
-            Menu.Checkbox("JClear.UseQ", "Use [Q]", true)     
-            Menu.Checkbox("JClear.UseW", "Use [W]", true)
-            Menu.Checkbox("JClear.UseE", "Use [E]", true)
-        end) 
-
-        Menu.Separator()
-        Menu.ColumnLayout("cols2", "cols2", 2, true, function()
-            Menu.ColoredText("Misc Options", 0xFFD700FF, true)
-            Menu.Checkbox("Misc.GapQ", "Use [Q] Gapclose", true)  
-            Menu.Checkbox("Misc.GapW", "Use [W] Gapclose", true)  
-            Menu.Checkbox("Misc.FocusE", "Focus [E] Target", true)
-
-            Menu.NextColumn()
-
-            Menu.ColoredText("Use [R] Below %", 0xFFD700FF, true)  
-            for k, v in pairs(ObjManager.Get("ally", "heroes")) do
-                local name = v.AsHero.CharName
-                Menu.Slider("AutoR."..name, name, 20, 0, 100) 
-            end
         end)
 
-        Menu.Separator()
-        Menu.ColoredText("Drawing Options", 0xFFD700FF, true)
-        Menu.Checkbox("Drawing.Q.Enabled",   "Draw [Q] Range")
-        Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
-        Menu.Checkbox("Drawing.W.Enabled",   "Draw [W] Range")
-        Menu.ColorPicker("Drawing.W.Color", "Draw [W] Color", 0x06D6A0FF) 
-        Menu.Checkbox("Drawing.E.Enabled",   "Draw [E] Range")
-        Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF) 
-        Menu.Checkbox("Drawing.R.Enabled",   "Draw [R] Range")
-        Menu.ColorPicker("Drawing.R.Color", "Draw [R] Color", 0xFFD166FF)
-    end)
+            Menu.NewTree("Harass Settings", "Harass Settings", function()
+            Menu.Separator("Harass Settings")
+            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
+            Menu.Dropdown("Harass.ModeQ", "Mode [Q]", 0, {"Smart", "Cursor Position"})
+            Menu.Checkbox("Harass.UseW", "Use [W]", true)
+            Menu.Checkbox("Harass.UseE", "Use [E]", true)
+        end)
+
+            Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
+            Menu.Separator("Jungle Clear Settings")
+            Menu.Checkbox("JClear.UseQ", "Use [Q]", true)
+            Menu.Checkbox("JClear.UseW", "Use [W]", true)
+            Menu.Checkbox("JClear.UseE", "Use [E]", true)
+        end)
+        end)
+
+        Menu.ColumnLayout("cols2", "cols2", 2, true, function()
+            Menu.NewTree("Misc Options", "Misc Options", function()
+            Menu.Separator("Misc Options")
+            Menu.Checkbox("Misc.GapQ", "Use [Q] Gapclose", true)
+            Menu.Checkbox("Misc.GapW", "Use [W] Gapclose", true)
+            Menu.Checkbox("Misc.FocusE", "Focus [E] Target", true)
+            Menu.Separator("Use [R] Below %")
+            for k, v in pairs(ObjManager.Get("ally", "heroes")) do
+                local name = v.AsHero.CharName
+                Menu.Slider("AutoR."..name, name, 20, 0, 100)
+            end
+        end)
+        end)
+
+            Menu.NewTree("Drawing Options", "Drawing Options", function()
+            Menu.Separator("Drawing Options")
+            Menu.Checkbox("Drawing.Q.Enabled", "Draw [Q] Range", true)
+            Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF)
+            Menu.Checkbox("Drawing.W.Enabled", "Draw [W] Range", true)
+            Menu.ColorPicker("Drawing.W.Color", "Draw [W] Color", 0x06D6A0FF)
+            Menu.Checkbox("Drawing.E.Enabled", "Draw [E] Range")
+            Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF)
+            Menu.Checkbox("Drawing.R.Enabled", "Draw [R] Range")
+            Menu.ColorPicker("Drawing.R.Color", "Draw [R] Color", 0xFFD166FF)
+        end)
+            Menu.Separator("Author: Thorn")
+        end)
 end
+
 
 function OnLoad()
     Kindred.LoadMenu()
