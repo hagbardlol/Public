@@ -1356,6 +1356,7 @@ _G.Libs.Prediction = Prediction
 ---@field IsValidTarget fun(self: TargetSelector, o: GameObject, maxRange: number|'-1'|nil, from: Vector|nil)
 ---@field IsValidAutoRange fun(self: TargetSelector, Target: GameObject, Source: AIBaseClient|nil)
 ---@field HasUndyingBuff fun(self: TargetSelector, Target: AIBaseClient, extraTime: number|nil)
+---@field GetPriority fun(self: TargetSelector, Target: AIHeroClient) @Returns hero priority on menu
 local TargetSelector
 
 --USAGE: _G.Libs.TargetSelector()
