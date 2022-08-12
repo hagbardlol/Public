@@ -2,7 +2,7 @@ if Player.CharName ~= "Leona" then return end
 
 module("UnrulyLeona", package.seeall, log.setup)
 clean.module("UnrulyLeona", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyLeona.lua", "1.0.5")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyLeona.lua", "1.0.6")
 
 local insert = table.insert
 local max, min = math.max, math.min
@@ -59,8 +59,7 @@ end
 
 function Leona.LoadMenu()
     Menu.RegisterMenu("UnrulyLeona", "Unruly Leona", function ()
-        Menu.ColumnLayout("cols", "cols", 4, true, function()
-            Menu.NewTree("Combo Settings", "Combo Settings", function()
+        Menu.NewTree("Combo Settings", "Combo Settings", function()
             Menu.Separator("Combo Settings")
             Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
             Menu.Checkbox("Combo.UseW", "Use [W]", true)
@@ -69,45 +68,47 @@ function Leona.LoadMenu()
             Menu.Indent(function()
                 Menu.Checkbox("ComboR.Duel", "Whitelist", true)
                 Menu.Slider("ComboR.MinHit", "Min Hit", 3, 2, 5)
-        end)
+            end)
         end)
 
-            Menu.NewTree("Harass Settings", "Harass Settings", function()
+        Menu.NewTree("Harass Settings", "Harass Settings", function()
             Menu.Separator("Harass Settings")
             Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
             Menu.Checkbox("Harass.UseW", "Use [W]", true)
             Menu.Checkbox("Harass.UseE", "Use [E]", false)
         end)
 
-            Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
+        Menu.NewTree("Lane Clear Settings", "Lane Clear Settings", function()
             Menu.Separator("Lane Clear Settings")
             Menu.Checkbox("Clear.PushQ", "Use [Q]", true)
             Menu.Checkbox("Clear.PushW", "Use [W]", true)
             Menu.Checkbox("Clear.PushE", "Use [E]", true)
         end)
             
-            Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
+        Menu.NewTree("Jungle Clear Settings", "Jungle Clear Settings", function()
             Menu.Separator("Jungle Clear Settings")
             Menu.Checkbox("Jungle.UseQ",   "Use [Q]", true)
             Menu.Checkbox("Jungle.UseW",   "Use [W]", true)
         end)
 
-            Menu.NewTree("Misc Options", "Misc Options", function()
-            Menu.Separator("Misc Options")
+        Menu.NewTree("Misc Options", "Misc Settings", function()
+            Menu.Separator("Misc Settings")
             Menu.Checkbox("Misc.GapE", "[E] AntiGap", true)
             Menu.Checkbox("Misc.IntE", "[E] Interrupt", true)
             Menu.Checkbox("Misc.GapR", "[R] AntiGap", true)
             Menu.Checkbox("Misc.IntR", "[R] Interrupt", true)
         end)
-            --Menu.Separator("Whitelist [R]")
-            --local added = {}
-            --for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
-                --local charName = v.CharName
-                --if not added[charName] then
-                    --added[charName] = true
-                    --Menu.Checkbox("ComboR.Duel." .. charName, charName, TS:GetPriority(v) >= 2)
-                --end
-            --end
+
+        Menu.NewTree("WhitelistTree", "Whitelist [R]", function()
+            Menu.Separator("Whitelist [R]")
+            local added = {}
+            for k, v in pairs(ObjManager.Get("enemy", "heroes")) do
+                local charName = v.CharName
+                if not added[charName] then
+                    added[charName] = true
+                    Menu.Checkbox("ComboR.Duel." .. charName, charName, TS:GetPriority(v) >= 2)
+                end
+            end
         end)
 
         Menu.NewTree("DrawTree", "Drawing Settings", function()
@@ -120,7 +121,7 @@ function Leona.LoadMenu()
             Menu.Checkbox("Drawing.R.Enabled",  "Draw [R] Range", true)
             Menu.ColorPicker("Drawing.R.Color", "Color [R]", 0xFFD166FF)
         end)
-            Menu.Separator("Author: Thorn")
+        Menu.Separator("Author: Thorn")
     end)
 end
 
