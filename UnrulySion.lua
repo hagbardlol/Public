@@ -2,7 +2,7 @@ if Player.CharName ~= "Sion" then return end
 
 module("UnrulySion", package.seeall, log.setup)
 clean.module("UnrulySion", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulySion.lua", "1.0.4")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulySion.lua", "1.0.5")
 
 local insert = table.insert
 local max, min = math.max, math.min
@@ -26,14 +26,14 @@ local spells = {
     }),
     W = Spell.Active({
         Slot            = Enums.SpellSlots.W,
-        Range           = 550,
+        Range           = 525,
         Delay           = 0, 
     }),
     E = Spell.Skillshot({
         Slot            = Enums.SpellSlots.E,
         Range           = 750,
-        Speed           = 2500,
-        Radius          = 100,
+        Speed           = 1800,
+        Radius          = 80,
         Delay           = 0.25,
         Type            = "Linear",
         Collisions      = {Heroes=true, Minions=true, WindWall=true},
@@ -43,11 +43,12 @@ local spells = {
     E2 = Spell.Skillshot({
         Slot            = Enums.SpellSlots.E,
         Range           = 1550,
-        Speed           = 2500,
-        Radius          = 100,
+        Speed           = 1800,
+        Radius          = 80,
         Delay           = 0.25,
         Type            = "Linear",
         ExtraRange      = 775,
+        UseHitbox       = true
     }),
     R = Spell.Skillshot({
         Slot            = Enums.SpellSlots.R,

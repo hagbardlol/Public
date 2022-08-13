@@ -6,7 +6,7 @@ if Player.CharName ~= "Caitlyn" then return end
 
 module("Unruly Caitlyn", package.seeall, log.setup)
 clean.module("Unruly Caitlyn", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.6")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.7")
 
 local clock = os.clock
 local insert = table.insert
@@ -130,6 +130,7 @@ function Caitlyn.LoadMenu()
             Menu.ColorPicker("Drawing.W.Color", "Draw [W] Color", 0x06D6A0FF) 
             Menu.Checkbox("Drawing.E.Enabled", "Draw [E] Range", false)
             Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF) 
+            Menu.Checkbox("Drawing.R.EnabledDmg", "Draw [R] Damage", true)
             Menu.Checkbox("Drawing.R.EnabledMM", "Draw [R] Range Minimap", false)
             Menu.ColorPicker("Drawing.R.ColorMM", "Draw [R] Color", 0xFFD166FF)
         end)
@@ -144,9 +145,6 @@ local function GameIsAvailable()
 end
 function Caitlyn.IsEnabledAndReady(spell, mode)
     return Menu.Get(mode .. ".Use"..spell) and Spells[spell]:IsReady()
-end
-function Caitlyn.GetRawDamageR()
-    return 75 + 225 * Spells.R:GetLevel() + 2*Player.BonusAD
 end
 
 local lastTick = 0
@@ -196,14 +194,11 @@ function Caitlyn.Auto()
     local pPos = Player.Position
     if Menu.Get("Misc.AutoR") and Spells.R:IsReady() and Player:CountEnemiesInRange(Menu.Get("Misc.SafeRangeR")) == 0 then
         local minRange = Menu.Get("Misc.MinRangeR")
-        local rawDmg = Caitlyn.GetRawDamageR()
 
         for k, hero in ipairs(Spells.R:GetTargets()) do
             local dist = hero:Distance(pPos)
             if dist > minRange and hero:CountEnemiesInRange(500) == 0 then
-                local timeToReach = Spells.R.Delay + dist/Spells.R.Speed
-                local dmg = DamageLib.CalculatePhysicalDamage(Player, hero, rawDmg)
-                if dmg > HealthPred.GetKillstealHealth(hero, timeToReach, Enums.DamageTypes.Physical) and Spells.R:Cast(hero) then
+                if Spells.R:CanKillTarget(hero) and Spells.R:Cast(hero) then
                     return true
                 end
             end
@@ -301,6 +296,7 @@ function Caitlyn.OnGapclose(source, dash)
         end
     end
 end
+
 function Caitlyn.OnHeroImmobilized(source, endT)
     if not source.IsEnemy then return end
 
@@ -314,6 +310,12 @@ function Caitlyn.OnHeroImmobilized(source, endT)
         if Spells.Q:CastOnHitChance(source, Enums.HitChance.Low) then
             return
         end
+    end
+end
+
+function Caitlyn.OnDrawDamage(obj, dmgList)
+    if Menu.Get("Drawing.R.EnabledDmg") then
+        insert(dmgList, Spells.R:GetDamage(obj))
     end
 end
 
