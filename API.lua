@@ -634,12 +634,12 @@ local AIBaseClient
 ---@field Perks table @{[perkId] = perkName}
 ---@field Items Item[] @{[itemSlot] = item}
 ---@field RecallInfo string
----@field HasPerk fun(id_or_name: number|string):boolean
----@field IsSpellEvolved fun(slot:Enum_SpellSlots):boolean
----@field CanLevelSpell fun(slot:Enum_SpellSlots):boolean
----@field CanEvolveSpell fun(slot:Enum_SpellSlots):boolean
----@field CountAlliesInRange fun(range:number):boolean @Allies of the unit, not player
----@field CountEnemiesInRange fun(range:number):boolean @Enemies of the unit, not player
+---@field HasPerk fun(self: AIHeroClient, id_or_name: number|string):boolean
+---@field IsSpellEvolved fun(self: AIHeroClient, slot: Enum_SpellSlots):boolean
+---@field CanLevelSpell fun(self: AIHeroClient, slot: Enum_SpellSlots):boolean
+---@field CanEvolveSpell fun(self: AIHeroClient, slot: Enum_SpellSlots):boolean
+---@field CountAlliesInRange fun(self: AIHeroClient, range: number):boolean @Allies of the unit, not player
+---@field CountEnemiesInRange fun(self: AIHeroClient, range: number):boolean @Enemies of the unit, not player
 local AIHeroClient
 
 --[[
