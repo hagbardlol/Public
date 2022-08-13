@@ -6,7 +6,7 @@ if Player.CharName ~= "Darius" then return end
 
 module("Unruly Darius", package.seeall, log.setup)
 clean.module("Unruly Darius", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.6")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyDarius.lua", "1.0.7")
 
 local clock = os.clock
 local insert, sort = table.insert, table.sort
@@ -73,6 +73,7 @@ function Darius.OnTick()
         ModeToExecute()
     end
 end
+
 function Darius.OnDraw()
     local playerPos = Player.Position
     
@@ -80,6 +81,12 @@ function Darius.OnDraw()
         if Menu.Get("Drawing."..k..".Enabled", true) then
             Renderer.DrawCircle3D(playerPos, v.Range, 30, 2, Menu.Get("Drawing."..k..".Color")) 
         end
+    end
+end
+
+function Darius.OnDrawDamage(obj, dmgList)
+    if Menu.Get("Drawing.R.EnabledDmg") then
+        insert(dmgList, spells.R:GetDamage(obj))
     end
 end
 
@@ -266,8 +273,9 @@ function Darius.LoadMenu()
             Menu.Separator("Drawing Options", 0xFFD700FF, true)
             Menu.Checkbox("Drawing.Q.Enabled", "[Q] Range", true)
             Menu.ColorPicker("Drawing.Q.Color", "[Q] Color", 0xEF476FFF)
-            Menu.Checkbox("Drawing.E.Enabled", "[E] Range")
+            Menu.Checkbox("Drawing.E.Enabled", "[E] Range", true)
             Menu.ColorPicker("Drawing.E.Color", "[E] Color", 0x118AB2FF)
+            Menu.Checkbox("Drawing.R.EnabledDmg", "[R] Damage", true)
             Menu.Checkbox("Drawing.R.Enabled", "[R] Range")
             Menu.ColorPicker("Drawing.R.Color", "[R] Color", 0xFFD166FF)
             Menu.Separator("Author: Thorn")
