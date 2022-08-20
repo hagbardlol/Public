@@ -478,6 +478,7 @@ local GameObject
 ---@class AttackableUnit : GameObject
 ---@field Health number
 ---@field MaxHealth number
+---@field SpecialHealth number
 ---@field HealthPercent number
 ---@field Mana number
 ---@field MaxMana number
