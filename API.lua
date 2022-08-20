@@ -1679,3 +1679,36 @@ _G.CoreEx.EvadeAPI = Evade
 local AutoUpdate
 _G.CoreEx.AutoUpdate = AutoUpdate
 
+--[[
+    ██   ██ ███████ ██    ██     ███████ ███████  ██████  ██    ██ ███████ ███    ██  ██████ ███████ ███████ 
+    ██  ██  ██       ██  ██      ██      ██      ██    ██ ██    ██ ██      ████   ██ ██      ██      ██      
+    █████   █████     ████       ███████ █████   ██    ██ ██    ██ █████   ██ ██  ██ ██      █████   ███████ 
+    ██  ██  ██         ██             ██ ██      ██ ▄▄ ██ ██    ██ ██      ██  ██ ██ ██      ██           ██ 
+    ██   ██ ███████    ██        ███████ ███████  ██████   ██████  ███████ ██   ████  ██████ ███████ ███████                                                                                                             
+]]
+--[[
+    Use this feature to bind multiple behaviours on the same key.    
+    Params:
+        fn_key: function that returns the KEY. Can return Menu.GetKey or the number like string.byte("A").
+        fn_callback: your function to be called with args (count, isRelease).
+    Example:
+        Press Key 1x -> dash to cursor, Press Key 2x -> dash oposite direction
+            _G.NewHotkeySequence(
+                function() return Menu.GetKey("Misc.ForceE") end, 
+                function(count, isRelease)
+                    if isRelease or not Spells.E:IsReady() then return end
+
+                    local heroPos = Player.Position
+                    local mousePos = Renderer.GetMousePos()
+                    local castPos = (count==1 and mousePos) or                       --Key was pressed 1 time
+                                    (count==2 and heroPos:Extended(mousePos, -400))  --Key was pressed 2 times
+                    
+                    if castPos and Spells.E:Cast(castPos) then
+                        return true
+                    end
+                end
+            )
+--]]
+---@type fun(fn_key:function, fn_callback:function):nil
+local NewHotkeySequence
+_G.CoreEx.NewHotkeySequence = NewHotkeySequence
