@@ -610,6 +610,7 @@ local AttackableUnit
 ---@field GetBuff fun(self: AIBaseClient, index_or_name: integer|string):BuffInst|nil
 ---@field GetBuffCount fun(self: AIBaseClient, index_or_name: string):number
 ---@field IsFacing fun(self: AIBaseClient, pos_or_obj:Vector|GameObject, max_degrees:number|nil):boolean
+---@field IsFacingAway fun(self: AIBaseClient, pos_or_obj:Vector|GameObject, max_degrees:number|nil):boolean
 ---@field GetBuffsOfType fun(self: AIBaseClient, buffType: Enum_BuffTypes):BuffInst[] @{[buffName_lower] = Buff}
 ---@field HasBuffOfType fun(self: AIBaseClient, buffType: Enum_BuffTypes):boolean
 ---@field HasBuffOfTypeList fun(self: AIBaseClient, buffTypes: Enum_BuffTypes[]):boolean @buffTypes={Enums.BuffTypes.Stun, Enums.BuffTypes.Taunt, ...}
@@ -635,6 +636,7 @@ local AIBaseClient
 ---@field Perks table @{[perkId] = perkName}
 ---@field Items Item[] @{[itemSlot] = item}
 ---@field RecallInfo string
+---@field RecallPosition Vector|nil
 ---@field HasPerk fun(self: AIHeroClient, id_or_name: number|string):boolean
 ---@field IsSpellEvolved fun(self: AIHeroClient, slot: Enum_SpellSlots):boolean
 ---@field CanLevelSpell fun(self: AIHeroClient, slot: Enum_SpellSlots):boolean
@@ -1615,7 +1617,7 @@ local DetectedSpell
 ---@field GetBestWalkPosition fun(position: Vector, speed: number, delay_in_secs: number):Vector|nil
 ---@field GetBestDashPosition fun(position: Vector, speed: number, delay_in_secs: number, range: number, fixed_range:boolean):Vector|nil
 ---@field GetBestBlinkPosition fun(position: Vector, delay_in_secs: number, range: number, fixed_range:boolean):Vector|nil
----@field IsPointSafe fun(position: Vector):boolean
+---@field IsPointSafe fun(position: Vector, delay_in_secs: number):boolean
 ---@field IsPathSafe fun(position: Vector, speed: number, delay_in_secs: number):boolean
 ---@field IsBlinkSafe fun(position: Vector, delay_in_secs: number):boolean
 ---@field GetDetectedSkillshots fun():DetectedSpell[] @All detected Skills 
