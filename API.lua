@@ -341,6 +341,7 @@ local SpellData
 ---@field Caster AIBaseClient
 ---@field Source AIBaseClient
 ---@field Target AttackableUnit
+---@field Targets AttackableUnit[]
 ---@field Missile MissileClient
 ---@field StartTime number
 ---@field EndTime number
