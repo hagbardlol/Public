@@ -489,8 +489,10 @@ local GameObject
 ---@field ShieldAP number
 ---@field FirstResource number
 ---@field FirstResourceMax number
+---@field FirstResourceType Enum_AbilityResourceTypes
 ---@field SecondResource number
 ---@field SecondResourceMax number
+---@field SecondResourceType Enum_AbilityResourceTypes
 ---@field IsTargetable boolean
 ---@field IsInvulnerable boolean
 ---@field IsAlive boolean
@@ -627,6 +629,7 @@ local AIBaseClient
 ---@class AIHeroClient  : AIBaseClient
 ---@field RespawnTime number
 ---@field Experience number
+---@field ExperiencePercent number
 ---@field Level number
 ---@field Gold number
 ---@field TotalGold number
@@ -887,6 +890,7 @@ _G.CoreEx.EventManager = EventManager
 ---@field Wind integer
 ---@field Ammo integer
 ---@field Other integer
+---@field None integer
 local AbilityResourceTypes
 _G.CoreEx.Enums.AbilityResourceTypes = AbilityResourceTypes
 
@@ -994,6 +998,7 @@ _G.CoreEx.Enums.Teams = Teams
 ---@field Item6 integer
 ---@field Trinket integer
 ---@field Recall integer
+---@field Passive integer
 ---@field BasicAttack integer
 ---@field SecondaryAttack integer
 local SpellSlots
