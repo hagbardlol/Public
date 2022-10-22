@@ -1,4 +1,4 @@
-local SCRIPT_NAME, VERSION, LAST_UPDATE = "CXAIO", "1.0.8", "10/08/2022"
+local SCRIPT_NAME, VERSION, LAST_UPDATE = "CXAIO", "1.0.9", "10/22/2022"
 _G.CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/CXAIO.lua", VERSION)
 module(SCRIPT_NAME, package.seeall, log.setup)
 clean.module(SCRIPT_NAME, clean.seeall, log.setup)
@@ -10,7 +10,6 @@ local supportedChamp = {
     Cassiopeia = true,
     LeeSin = true,
     Ahri = true,
-    Ashe = true,
     Fizz = true,
     Kassadin = true,
     Kayn = true,
