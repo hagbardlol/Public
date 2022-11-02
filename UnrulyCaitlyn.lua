@@ -1,330 +1,85 @@
---[[
-    First Release By Thorn @ 22.Nov.2020    
-]]
-
 if Player.CharName ~= "Caitlyn" then return end
 
 module("Unruly Caitlyn", package.seeall, log.setup)
 clean.module("Unruly Caitlyn", clean.seeall, log.setup)
-CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.7")
+CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/UnrulyCaitlyn.lua", "1.0.8")
+local CoreEx = _G.CoreEx
+local Enums, EventManager, Renderer, Game, Vector = CoreEx.Enums, CoreEx.EventManager, CoreEx.Renderer, CoreEx.Game, CoreEx.Geometry.Vector
+local Screen = Renderer.GetResolution()
 
-local clock = os.clock
-local insert = table.insert
-
-local _SDK = _G.CoreEx
-local Console, ObjManager, EventManager, Geometry, Input, Renderer, Enums, Game = _SDK.Console, _SDK.ObjectManager, _SDK.EventManager, _SDK.Geometry, _SDK.Input, _SDK.Renderer, _SDK.Enums, _SDK.Game
-local Menu, Orbwalker, Collision, Prediction, HealthPred = _G.Libs.NewMenu, _G.Libs.Orbwalker, _G.Libs.CollisionLib, _G.Libs.Prediction, _G.Libs.HealthPred
-local Spell, DamageLib = _G.Libs.Spell, _G.Libs.DamageLib
-
-local Spells = {
-    Q = Spell.Skillshot({
-        Slot   = Enums.SpellSlots.Q,
-        Delay  = 0.625,
-        Speed  = 2200,
-        Range  = 1250,
-        Radius = 60,
-        Type   = "Linear",
-        Collisions = {WindWall=true},
-    }),
-    Q2 = Spell.Skillshot({
-        Slot   = Enums.SpellSlots.Q,
-        Delay  = 0.625,
-        Speed  = 2200,
-        Range  = 1250,
-        Radius = 90,
-        Type   = "Linear",
-        Collisions = {WindWall=true},
-    }),
-    W = Spell.Skillshot({
-        Slot   = Enums.SpellSlots.W,
-        Delay  = 1,
-        Speed  = math.huge,
-        Range  = 800,
-        Radius = 75,        
-        IsTrap = true,
-        Type   = "Circular",
-    }),
-    E = Spell.Skillshot({
-        Slot   = Enums.SpellSlots.E,
-        Delay  = 0.25,
-        Speed  = 1600,
-        Range  = 750,
-        Radius = 70,
-        Type   = "Linear",
-        Collisions = {Heroes=true, Minions=true, WindWall=true},
-
-        Knockback = 400,
-    }),
-    R = Spell.Targeted({
-        Slot   = Enums.SpellSlots.R,
-        Delay  = 1.375,
-        Speed  = 3200,
-        Range  = 3500,
-        Radius = 40
-    }),
+local Text = {
+    Title = "Unfortunately, this assembly is no longer supported by us.",
+    Subtitle = "No need to panic! We have made a new assembly available for you. Just check the forum or download the new assembly with the in-game downloader.",
+    Message = "Please disable this assembly in your loader and press F5 to make the message disappear!",
 }
 
+local Size = {
+    Border = Vector(800, 230), -- width, height
+    Background = Vector(799, 228),
+    Logo = Vector(350, 100),
+    Warning = Vector(40, 40),
+    Text = {
+        Title = Renderer.CalcTextSize(Text.Title),
+        Subtitle = Renderer.CalcTextSize(Text.Subtitle),
+        Message = Renderer.CalcTextSize(Text.Message),
+    }
+}
 
----@type TargetSelector
-local TS = _G.Libs.TargetSelector()
-local Caitlyn = {}
-local blockList = {}
+local Position = {
+    Border = Vector((Screen.x / 2) - Size.Border.x / 2, (Screen.y / 2) - Size.Border.y / 2),
+    Background = Vector((Screen.x / 2) - Size.Background.x / 2, (Screen.y / 2) - Size.Background.y / 2),
+    Logo = Vector(Screen.x / 2, Screen.y / 2 - Size.Logo.y / 2),
+    Line = {
+        Start = Vector((Screen.x / 2 - Size.Border.x / 2) + 10, (Screen.y / 2 - Size.Logo.y / 2) + 60),
+        End =  Vector((Screen.x / 2 + Size.Border.x / 2) - 10, (Screen.y / 2 - Size.Logo.y / 2) + 60)
+    },
+    Text = {
+        Title = Vector((Screen.x / 2) - Size.Text.Title.x / 2, (Screen.y / 2 - Size.Logo.y / 2) + 60 + Size.Text.Title.y / 2),
+        Subtitle = Vector((Screen.x / 2) - Size.Text.Subtitle.x / 2, (Screen.y / 2 - Size.Logo.y / 2) + 60 + Size.Text.Title.y + Size.Text.Subtitle.y / 2),
+        Message = Vector((Screen.x / 2) - Size.Text.Message.x / 2, (Screen.y / 2 - Size.Logo.y / 2) + 60 + Size.Text.Title.y + Size.Text.Subtitle.y + Size.Text.Message.y / 2),
+    },
+    Warning = Vector((Screen.x / 2) - Size.Warning.x / 2, (Screen.y / 2 - Size.Logo.y / 2) + 60 + Size.Text.Title.y + Size.Text.Subtitle.y + Size.Text.Message.y + Size.Warning.y / 2 + 10)
+}
 
-local function CountHeroesInRange(pos, range, team)
-    local count = 0
-    for k, v in pairs(ObjManager.Get(team, "heroes")) do
-        local hero = v.AsHero
-        if hero and hero:Distance(pos) < range and hero.IsAlive then
-            count = count + 1
-        end
-    end
-    return count
+local Logo = Renderer.CreateSprite("robur.png", Size.Logo.x, Size.Logo.y)
+local WarningSprite = Renderer.CreateSprite("warning.png", Size.Warning.x, Size.Warning.y)
+
+local function DrawBackground()
+    Renderer.DrawRectOutline(Position.Border, Size.Border, 1, 2, 0x001A332F)
+    Renderer.DrawFilledRect(Position.Background, Size.Background, 1, 0x0D1B18FF)
 end
 
-function Caitlyn.LoadMenu()
-    Menu.RegisterMenu("UnrulyCaitlyn", "Unruly Caitlyn", function()       
-        Menu.NewTree("CaitlynCombo", "Combo Settings", function()
-        Menu.Separator("Combo Settings")
-            Menu.Checkbox("Combo.UseQ", "Use [Q]", true)
-            Menu.Slider("Combo.SafeQ", "Block [Q] Enemies Nearby", 1, 0, 5)
-            Menu.Checkbox("Combo.UseW", "Use [W]", true)
-            Menu.Slider("Combo.SaveW", "Save Traps", 1, 0, 5)
-            Menu.Checkbox("Combo.UseE", "Use [E]", true)            
-        end)            
-
-        Menu.NewTree("CaitlynHarass", "Harass Settings", function()
-        Menu.Separator("Harass Settings")
-            Menu.Checkbox("Harass.UseQ", "Use [Q]", true)
-            Menu.Slider("Harass.SafeQ", "Block [Q] Enemies Nearby", 1, 0, 5)
-            Menu.Checkbox("Harass.UseW", "Use [W]", true)
-            Menu.Slider("Harass.SaveW", "Save Traps", 2, 0, 5)
-            Menu.Checkbox("Harass.UseE", "Use [E]", false) 
-        end)
-
-        Menu.NewTree("Fast Clear", "Clear Settings", function()
-        Menu.Separator("Fast Clear Settings")
-            Menu.Checkbox("Clear.PushQ", "Use [Q]", true) 
-        end)
-        
-        Menu.NewTree("CaitlynFlee", "Flee Settings", function()
-        Menu.Separator("Flee Settings")
-            Menu.Checkbox("Flee.UseE", "Use [E]", true) 
-        end)       
-    
-        Menu.NewTree("CaitlynMisc", "Misc Settings", function()
-        Menu.Separator("Misc Settings")
-            Menu.Checkbox("Misc.AutoQ", "Auto [Q] Immobile")
-            Menu.Checkbox("Misc.AutoW", "Auto [W] Immobile/Dash", true)
-            Menu.Checkbox("Misc.GapW", "Auto [W] GapClose")
-            Menu.Checkbox("Misc.GapE", "Auto [E] GapClose", true)          
-            Menu.Checkbox("Misc.AutoR", "Auto [R] Killable", true)
-            Menu.Slider("Misc.MinRangeR", "Min Range For [R]", 1000, 1000, Spells.R.Range-500, 50) 
-            Menu.Slider("Misc.SafeRangeR", "Block [R] Enemies Nearby", 500, 0, 1250, 50)              
-        end)
-
-        Menu.NewTree("CaitlynDraw", "Draw Settings", function()
-        Menu.Separator("Drawing Settings")
-            Menu.Checkbox("Drawing.Q.Enabled", "Draw [Q] Range", true)
-            Menu.ColorPicker("Drawing.Q.Color", "Draw [Q] Color", 0xEF476FFF) 
-            Menu.Checkbox("Drawing.W.Enabled", "Draw [W] Range", false)
-            Menu.ColorPicker("Drawing.W.Color", "Draw [W] Color", 0x06D6A0FF) 
-            Menu.Checkbox("Drawing.E.Enabled", "Draw [E] Range", false)
-            Menu.ColorPicker("Drawing.E.Color", "Draw [E] Color", 0x118AB2FF) 
-            Menu.Checkbox("Drawing.R.EnabledDmg", "Draw [R] Damage", true)
-            Menu.Checkbox("Drawing.R.EnabledMM", "Draw [R] Range Minimap", false)
-            Menu.ColorPicker("Drawing.R.ColorMM", "Draw [R] Color", 0xFFD166FF)
-        end)
-        Menu.Separator("Hotkeys")
-        Menu.Keybind("Misc.ForceE", "[E] To Cursor", string.byte('T'))     
-        Menu.Separator("Author: Thorn")
-    end)
+local function DrawLogo()
+    Logo:Draw(Position.Logo, 0, true)
 end
 
-local function GameIsAvailable()
-    return not (Game.IsChatOpen() or Game.IsMinimized() or Player.IsDead or Player.IsRecalling)
-end
-function Caitlyn.IsEnabledAndReady(spell, mode)
-    return Menu.Get(mode .. ".Use"..spell) and Spells[spell]:IsReady()
-end
-
-local lastTick = 0
-function Caitlyn.OnTick()        
-    if not GameIsAvailable() then return end  
-
-    if Caitlyn.Auto() then return end
-    if not Orbwalker.CanCast() then return end   
-
-    local gameTime = Game.GetTime()
-    if gameTime < (lastTick + 0.25) then return end
-    lastTick = gameTime    
-    
-    for k, v in pairs(blockList) do
-        if gameTime > v + 2.5 then
-            blockList[k] = nil
-        end
-    end
-
-    local ModeToExecute = Caitlyn[Orbwalker.GetMode()]
-    if ModeToExecute then
-        ModeToExecute()
-    end
-end
-function Caitlyn.OnDraw() 
-    local pPos = Player.Position
-
-    if Menu.Get("Drawing.R.EnabledMM") then
-        Renderer.DrawCircleMM(pPos, Spells.R.Range, 2, Menu.Get("Drawing.R.ColorMM"))
-    end
-    
-    for k, v in pairs(Spells) do
-        if Menu.Get("Drawing."..k..".Enabled", true) then
-            Renderer.DrawCircle3D(pPos, v.Range, 30, 2, Menu.Get("Drawing."..k..".Color")) 
-        end
+local function DrawWarning()
+    if math.floor(Game.GetTime() * 10) % 2 == 0 then
+        WarningSprite:Draw(Position.Warning, 0, true)
     end
 end
 
-function Caitlyn.Auto()
-    if Menu.Get("Misc.ForceE") and Spells.E:IsReady() then
-        local castPos = Player.Position:Extended(Renderer.GetMousePos(), -400)
-        if Spells.E:Cast(castPos) then
-            return true
-        end
-    end
-
-    local pPos = Player.Position
-    if Menu.Get("Misc.AutoR") and Spells.R:IsReady() and Player:CountEnemiesInRange(Menu.Get("Misc.SafeRangeR")) == 0 then
-        local minRange = Menu.Get("Misc.MinRangeR")
-
-        for k, hero in ipairs(Spells.R:GetTargets()) do
-            local dist = hero:Distance(pPos)
-            if dist > minRange and hero:CountEnemiesInRange(500) == 0 then
-                if Spells.R:CanKillTarget(hero) and Spells.R:Cast(hero) then
-                    return true
-                end
-            end
-        end
-    end
+local function DrawLine()
+    Renderer.DrawLine(Position.Line.Start, Position.Line.End, 1, 0xBFA64BFF)
 end
 
-function Caitlyn.ComboLogic(mode)
-    local pPos, pRange = Player.Position, TS:GetTrueAutoAttackRange(Player)
-
-    if Caitlyn.IsEnabledAndReady("E", mode) then
-        for k, hero in ipairs(Spells.E:GetTargets()) do
-            if Spells.E:CastOnHitChance(hero, 0.85) then --hero:Distance(pPos) < (pRange - 400) -- This check makes it worse I think
-                return
-            end
-        end
-
-        if not TS:GetTarget(-1) then
-            local bestTarget = TS:GetTarget(TS:GetTrueAutoAttackRange(Player) + Spells.E.Knockback)
-            if bestTarget then
-                local aaDmg = DamageLib.GetAutoAttackDamage(Player, bestTarget, true)
-                local health = HealthPred.GetKillstealHealth(bestTarget, 0.25, Enums.DamageTypes.Physical)
-                if aaDmg * 2 > health and Spells.E:Cast(pPos:Extended(bestTarget.Position, -400)) then
-                    return
-                end
-            end
-        end
-    end
-    if Caitlyn.IsEnabledAndReady("W", mode) and Spells.W:GetCurrentAmmo() > Menu.Get(mode..".SaveW") then
-        for k, hero in ipairs(Spells.W:GetTargets()) do
-            if not blockList[hero.Handle] and Spells.W:CastOnHitChance(hero, Enums.HitChance.Low) then
-                blockList[hero.Handle] = Game.GetTime()
-                return
-            end
-        end
-    end
-    
-    local enemiesAround = CountHeroesInRange(pPos, pRange, "enemy")
-    if Caitlyn.IsEnabledAndReady("Q", mode) and enemiesAround <= Menu.Get(mode..".SafeQ") then
-        for k, hero in ipairs(Spells.Q:GetTargets()) do
-            if Spells.Q:CastOnHitChance(hero, Enums.HitChance.Low) then
-                return
-            end
-        end
-    end    
+local function DrawText()
+    Renderer.DrawText(Position.Text.Title, Size.Text.Title, Text.Title, 0xFF0000FF)
+    Renderer.DrawText(Position.Text.Subtitle, Size.Text.Subtitle, Text.Subtitle, 0x00FF00FF)
+    Renderer.DrawText(Position.Text.Message, Size.Text.Message, Text.Message, 0xFFD966FF)
 end
 
-function Caitlyn.Combo()  Caitlyn.ComboLogic("Combo")  end
-function Caitlyn.Harass() Caitlyn.ComboLogic("Harass") end
-function Caitlyn.Flee() 
-    if Caitlyn.IsEnabledAndReady("E", "Flee") then
-        for k, hero in ipairs(Spells.E:GetTargets()) do
-            if Spells.E:CastOnHitChance(hero, 0.85) then
-                return
-            end
-        end
-    end
-end
-function Caitlyn.Waveclear()
-    local fastClear = Orbwalker.IsFastClearEnabled()
-       
-    if fastClear and Spells.Q:IsReady() and Menu.Get("Clear.PushQ") then
-        if Spells.Q:CastIfWillHit(3, "minions") then
-            return
-        end
-    end     
+
+local function OnDraw()
+    DrawBackground()
+    DrawLogo()
+    DrawLine()
+    DrawText()
+    DrawWarning()
 end
 
-function Caitlyn.OnGapclose(source, dash)
-    if not source.IsEnemy then return end
 
-    if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.AutoW") then
-        if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
-            blockList[source.Handle] = Game.GetTime()
-            return
-        end
-    end
-
-    local paths  = dash:GetPaths()
-    local endPos = paths[#paths].EndPos
-    local pPos  = Player.Position
-    local pDist = pPos:Distance(endPos)    
-
-    if pDist < 500 and pDist < pPos:Distance(dash.StartPos) and source:IsFacing(pPos) then
-        if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.GapW") then
-            if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
-                blockList[source.Handle] = Game.GetTime()
-                return
-            end
-        end
-        if Spells.E:IsReady() and Menu.Get("Misc.GapE") then
-            if Spells.E:CastOnHitChance(source, Enums.HitChance.Low) then
-                return
-            end
-        end
-    end
+local function Initialize()
+    EventManager.RegisterCallback(Enums.Events.OnDraw, OnDraw)
 end
-
-function Caitlyn.OnHeroImmobilized(source, endT)
-    if not source.IsEnemy then return end
-
-    if not blockList[source.Handle] and Spells.W:IsReady() and Menu.Get("Misc.AutoW") then
-        if Spells.W:CastOnHitChance(source, Enums.HitChance.Low) then
-            blockList[source.Handle] = Game.GetTime()
-            return
-        end
-    end
-    if Spells.Q:IsReady() and Menu.Get("Misc.AutoQ") then
-        if Spells.Q:CastOnHitChance(source, Enums.HitChance.Low) then
-            return
-        end
-    end
-end
-
-function Caitlyn.OnDrawDamage(obj, dmgList)
-    if Menu.Get("Drawing.R.EnabledDmg") then
-        insert(dmgList, Spells.R:GetDamage(obj))
-    end
-end
-
-function OnLoad()
-    Caitlyn.LoadMenu()
-    for eventName, eventId in pairs(Enums.Events) do
-        if Caitlyn[eventName] then
-            EventManager.RegisterCallback(eventId, Caitlyn[eventName])
-        end
-    end    
-    return true
-end
+Initialize()
