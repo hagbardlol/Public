@@ -1,6 +1,6 @@
 module("AIO Loader", package.seeall, log.setup)
 clean.module("AIO Loader", clean.seeall, log.setup)
-_G.CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/champions.lua", "1.0.1")
+_G.CoreEx.AutoUpdate("https://raw.githubusercontent.com/hagbardlol/Public/main/champions.lua", "1.0.2")
 
 local aioChamps = {
     Akshan = true,
@@ -34,7 +34,7 @@ local supportedChamp = {
     --Ashe = true,
     --AurelionSol = true,
     Azir = true,
-    BelVeth = true,
+    Belveth = true,
     --Blitzcrank = true,
     --Brand = true,
     Caitlyn = true,
